@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veles Syndicate | Budujemy Imperia</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --green: #2ECC71;
+            --blue: #3498DB;
+            --red: #E74C3C;
+            --bg-dark: #050505;
+            --bg-card: #0a0a0a;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .rtl {
+            font-family: 'Inter', sans-serif; /* Fallback, maybe add Arabic font if needed */
+        }
+
+        /* SPA Layout */
+        main section {
+            display: none;
+            min-height: 100vh;
+            padding: 100px 5%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition-smooth);
+        }
+
+        main section.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Specific */
+        #hero {
+            position: relative;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        #hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #hero p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        /* Brands 3D Cards */
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 50px;
+            perspective: 1000px;
+        }
+
+        .card-3d-wrap {
+            height: 450px;
+            cursor: pointer;
+        }
+
+        .card-3d {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card-3d::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at var(--x) var(--y), var(--glow-color, rgba(212, 175, 55, 0.2)), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .card-3d-wrap:hover .card-3d::after {
+            opacity: 1;
+        }
+
+        .card-content {
+            padding: 40px;
+            text-align: center;
+            transform: translateZ(50px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            border: 2px solid currentColor;
+            transform: translateZ(30px);
+        }
+
+        .brand-logo.green { color: var(--green); box-shadow: 0 0 20px rgba(46, 204, 113, 0.3); }
+        .brand-logo.blue { color: var(--blue); box-shadow: 0 0 20px rgba(52, 152, 219, 0.3); }
+        .brand-logo.red { color: var(--red); box-shadow: 0 0 20px rgba(231, 76, 60, 0.3); }
+
+        .btn-3d.mini {
+            padding: 8px 20px;
+            font-size: 0.8rem;
+        }
+
+        .content-text {
+            max-width: 800px;
+            text-align: center;
+            line-height: 1.8;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .brand-detail {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .contact-form input, .contact-form textarea {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            border-radius: 5px;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: var(--gold);
+        }
+
+        /* Language Selector */
+        .lang-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            max-width: 300px;
+            justify-content: flex-end;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: var(--transition-smooth);
+            border-radius: 4px;
+        }
+
+        .lang-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .lang-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* Global Components */
+        .btn-3d {
+            position: relative;
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gold);
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .btn-3d:hover {
+            color: var(--bg-dark);
+        }
+
+        .btn-3d:hover::before {
+            left: 0;
+        }
+
+        /* RTL Specifics */
+        .rtl .lang-selector {
+            justify-content: flex-start;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                display: none; /* In a real project we'd use a hamburger */
+            }
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .lang-selector {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header id="header">
+        <a href="#/hero" class="logo">VELES SYNDICATE</a>
+        <nav>
+            <ul>
+                <li><a onclick="navigateTo('hero')" data-i18n="nav_home">Start</a></li>
+                <li><a onclick="navigateTo('brands')" data-i18n="nav_brands">Marki</a></li>
+                <li><a onclick="navigateTo('philosophy')" data-i18n="nav_philosophy">Filozofia</a></li>
+                <li><a onclick="navigateTo('synergy')" data-i18n="nav_synergy">Synergia</a></li>
+                <li><a onclick="navigateTo('contact')" data-i18n="nav_contact">Kontakt</a></li>
+            </ul>
+        </nav>
+        <div class="lang-selector">
+            <button class="lang-btn" data-lang="pl" onclick="setLanguage('pl')">PL</button>
+            <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn" data-lang="de" onclick="setLanguage('de')">DE</button>
+            <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">FR</button>
+            <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">ES</button>
+            <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" data-lang="ua" onclick="setLanguage('ua')">UA</button>
+            <button class="lang-btn" data-lang="zh" onclick="setLanguage('zh')">ZH</button>
+            <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+            <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
+            <button class="lang-btn" data-lang="hi" onclick="setLanguage('hi')">HI</button>
+            <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">AR</button>
+        </div>
+    </header>
+
+    <main id="spa-content">
+        <section id="hero" class="active">
+            <canvas id="hero-canvas"></canvas>
+            <div class="hero-content">
+                <h1 data-i18n="hero_title">Budujemy imperia.</h1>
+                <p data-i18n="hero_subtitle">Wiedza. Narzędzia. Wykonanie. Dominacja.</p>
+                <div class="hero-cta">
+                    <a onclick="navigateTo('brands')" class="btn-3d" data-i18n="nav_brands">Marki</a>
+                </div>
+            </div>
+        </section>
+        <section id="brands">
+            <h2 data-i18n="brands_title">Nasze Marki</h2>
+            <div class="brands-grid">
+                <!-- Academy Card -->
+                <div class="card-3d-wrap" data-color="var(--green)">
+                    <div class="card-3d">
+                        <div class="card-content">
+                            <div class="brand-logo green">A</div>
+                            <h3 data-i18n="brand_academy_title">Syndicate Academy</h3>
+                            <p data-i18n="brand_academy_desc">Edukacja elit finansowych i biznesowych.</p>
+                            <button class="btn-3d mini" onclick="navigateTo('brand-academy')" data-i18n="brand_more">Więcej</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Digital Card -->
+                <div class="card-3d-wrap" data-color="var(--blue)">
+                    <div class="card-3d">
+                        <div class="card-content">
+                            <div class="brand-logo blue">D</div>
+                            <h3 data-i18n="brand_digital_title">Syndicate Digital</h3>
+                            <p data-i18n="brand_digital_desc">Zaawansowane rozwiązania technologiczne i marketing.</p>
+                            <button class="btn-3d mini" onclick="navigateTo('brand-digital')" data-i18n="brand_more">Więcej</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Interiors Card -->
+                <div class="card-3d-wrap" data-color="var(--red)">
+                    <div class="card-3d">
+                        <div class="card-content">
+                            <div class="brand-logo red">I</div>
+                            <h3 data-i18n="brand_interiors_title">Syndicate Interiors</h3>
+                            <p data-i18n="brand_interiors_desc">Design i realizacja luksusowych przestrzeni.</p>
+                            <button class="btn-3d mini" onclick="navigateTo('brand-interiors')" data-i18n="brand_more">Więcej</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="philosophy">
+            <h2 data-i18n="philosophy_title">Filozofia Syndicate</h2>
+            <div class="content-text">
+                <p data-i18n="philosophy_text">U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki. Nie tylko budujemy firmy – tworzymy ekosystemy, które definiują przyszłość luksusu i efektywności.</p>
+            </div>
+        </section>
+        <section id="synergy">
+            <h2 data-i18n="synergy_title">Synergia marek</h2>
+            <div class="content-text">
+                <p data-i18n="synergy_text">Nasz model biznesowy opiera się na wymianie wartości między markami. Absolwenci Academy wykorzystują rozwiązania Digital do skalowania swoich przedsięwzięć, a ich sukces materializuje się w przestrzeniach zaprojektowanych przez Interiors.</p>
+            </div>
+        </section>
+
+        <!-- Dedicated Brand Sections -->
+        <section id="brand-academy">
+            <h2 data-i18n="brand_academy_title">Syndicate Academy</h2>
+            <div class="brand-detail">
+                <p data-i18n="brand_academy_desc">Edukacja elit finansowych i biznesowych.</p>
+                <a href="https://academy.veles-syndicate.com" target="_blank" class="btn-3d" data-i18n="academy_cta">Wstąp do Academy</a>
+            </div>
+        </section>
+        <section id="brand-digital">
+            <h2 data-i18n="brand_digital_title">Syndicate Digital</h2>
+            <div class="brand-detail">
+                <p data-i18n="brand_digital_desc">Zaawansowane rozwiązania technologiczne i marketing.</p>
+                <a href="https://digital.veles-syndicate.com" target="_blank" class="btn-3d" data-i18n="digital_cta">Rozpocznij transformację</a>
+            </div>
+        </section>
+        <section id="brand-interiors">
+            <h2 data-i18n="brand_interiors_title">Syndicate Interiors</h2>
+            <div class="brand-detail">
+                <p data-i18n="brand_interiors_desc">Design i realizacja luksusowych przestrzeni.</p>
+                <a href="https://interiors.veles-syndicate.com" target="_blank" class="btn-3d" data-i18n="interiors_cta">Zaprojektuj przyszłość</a>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 data-i18n="contact_title">Kontakt</h2>
+            <form id="contact-form" class="contact-form" onsubmit="event.preventDefault(); alert('Wiadomość wysłana / Message sent');">
+                <input type="text" data-i18n-placeholder="contact_name" placeholder="Imię i nazwisko" required>
+                <input type="email" data-i18n-placeholder="contact_email" placeholder="E-mail" required>
+                <textarea data-i18n-placeholder="contact_msg" placeholder="Wiadomość" rows="5" required></textarea>
+                <button type="submit" class="btn-3d" data-i18n="contact_send">Wyślij wiadomość</button>
+            </form>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <div class="footer-content" style="padding: 40px 5%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05);">
+            <p data-i18n="footer_rights">© 2024 Veles Syndicate Sp. z o.o. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * System i18n - Tłumaczenia dla 12 języków
+         */
+        const translations = {
+            pl: {
+                nav_home: "Start",
+                nav_brands: "Marki",
+                nav_philosophy: "Filozofia",
+                nav_synergy: "Synergia",
+                nav_contact: "Kontakt",
+                hero_title: "Budujemy imperia.",
+                hero_subtitle: "Wiedza. Narzędzia. Wykonanie. Dominacja.",
+                brands_title: "Nasze Marki",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Edukacja elit finansowych i biznesowych.",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Zaawansowane rozwiązania technologiczne i marketing.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Design i realizacja luksusowych przestrzeni.",
+                brand_more: "Więcej",
+                philosophy_title: "Filozofia Syndicate",
+                philosophy_text: "U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki. Nie tylko budujemy firmy – tworzymy ekosystemy, które definiują przyszłość luksusu i efektywności.",
+                synergy_title: "Synergia marek",
+                synergy_text: "Nasz model biznesowy opiera się na wymianie wartości między markami. Absolwenci Academy wykorzystują rozwiązania Digital do skalowania swoich przedsięwzięć, a ich sukces materializuje się w przestrzeniach zaprojektowanych przez Interiors.",
+                academy_cta: "Wstąp do Academy",
+                digital_cta: "Rozpocznij transformację",
+                interiors_cta: "Zaprojektuj przyszłość",
+                contact_title: "Kontakt",
+                contact_name: "Imię i nazwisko",
+                contact_email: "E-mail",
+                contact_msg: "Wiadomość",
+                contact_send: "Wyślij wiadomość",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. Wszelkie prawa zastrzeżone."
+            },
+            en: {
+                nav_home: "Home",
+                nav_brands: "Brands",
+                nav_philosophy: "Philosophy",
+                nav_synergy: "Synergy",
+                nav_contact: "Contact",
+                hero_title: "We build empires.",
+                hero_subtitle: "Knowledge. Tools. Execution. Dominance.",
+                brands_title: "Our Brands",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Education of financial and business elites.",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Advanced technological solutions and marketing.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Design and realization of luxury spaces.",
+                brand_more: "More",
+                philosophy_title: "Syndicate Philosophy",
+                philosophy_text: "At the heart of Veles Syndicate lies the belief that true market dominance comes from a harmonious blend of knowledge, technology, and aesthetics. We don't just build companies – we create ecosystems that define the future of luxury and efficiency.",
+                synergy_title: "Brand Synergy",
+                synergy_text: "Our business model is based on value exchange between brands. Academy graduates use Digital solutions to scale their ventures, and their success materializes in spaces designed by Interiors.",
+                academy_cta: "Join the Academy",
+                digital_cta: "Start transformation",
+                interiors_cta: "Design the future",
+                contact_title: "Contact",
+                contact_name: "Full Name",
+                contact_email: "E-mail",
+                contact_msg: "Message",
+                contact_send: "Send message",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. All rights reserved."
+            },
+            de: {
+                nav_home: "Startseite",
+                nav_brands: "Marken",
+                nav_philosophy: "Philosophie",
+                nav_synergy: "Synergie",
+                nav_contact: "Kontakt",
+                hero_title: "Wir bauen Imperien.",
+                hero_subtitle: "Wissen. Werkzeuge. Ausführung. Dominanz.",
+                brands_title: "Unsere Marken",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Ausbildung von Finanz- und Geschäftseliten.",
+                brand_more: "Mehr",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Fortschrittliche technologische Lösungen und Marketing.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Design und Realisierung von Luxusräumen.",
+                philosophy_title: "Syndicate-Philosophie",
+                philosophy_text: "Veles Syndicate basiert auf der Überzeugung, dass wahre Marktdominanz aus einer harmonischen Mischung von Wissen, Technologie und Ästhetik resultiert.",
+                synergy_title: "Markensynergie",
+                synergy_text: "Unser Geschäftsmodell basiert auf dem Wertaustausch zwischen den Marken.",
+                academy_cta: "Treten Sie der Academy bei",
+                digital_cta: "Transformation starten",
+                interiors_cta: "Zukunft gestalten",
+                contact_title: "Kontakt",
+                contact_name: "Name",
+                contact_email: "E-Mail",
+                contact_msg: "Nachricht",
+                contact_send: "Nachricht senden",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. Alle Rechte vorbehalten."
+            },
+            fr: {
+                nav_home: "Accueil",
+                nav_brands: "Marques",
+                nav_philosophy: "Philosophie",
+                nav_synergy: "Synergie",
+                nav_contact: "Contact",
+                hero_title: "Nous construisons des empires.",
+                hero_subtitle: "Connaissance. Outils. Exécution. Dominance.",
+                brands_title: "Nos Marques",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Éducation des élites financières et commerciales.",
+                brand_more: "Plus",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Solutions technologiques avancées et marketing.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Design et réalisation d'espaces de luxe.",
+                philosophy_title: "Philosophie de Syndicate",
+                philosophy_text: "Veles Syndicate repose sur la conviction que la véritable domination du marché provient d'un mélange harmonieux de connaissances, de technologie et d'esthétique.",
+                synergy_title: "Synergie des marques",
+                synergy_text: "Notre modèle d'affaires est basé sur l'échange de valeur entre les marques.",
+                academy_cta: "Rejoindre l'Academy",
+                digital_cta: "Démarrer la transformation",
+                interiors_cta: "Concevoir l'avenir",
+                contact_title: "Contact",
+                contact_name: "Nom",
+                contact_email: "E-mail",
+                contact_msg: "Message",
+                contact_send: "Envoyer le message",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. Tous droits réservés."
+            },
+            es: {
+                nav_home: "Inicio",
+                nav_brands: "Marcas",
+                nav_philosophy: "Filosofía",
+                nav_synergy: "Sinergia",
+                nav_contact: "Contacto",
+                hero_title: "Construimos imperios.",
+                hero_subtitle: "Conocimiento. Herramientas. Ejecución. Dominio.",
+                brands_title: "Nuestras Marcas",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Educación de élites financieras y empresariales.",
+                brand_more: "Más",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Soluciones tecnológicas avanzadas y marketing.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Diseño y realización de espacios de lujo.",
+                philosophy_title: "Filosofía de Syndicate",
+                philosophy_text: "Veles Syndicate se basa en la convicción de que el verdadero dominio del mercado proviene de una combinación armoniosa de conocimiento, tecnología y estética.",
+                synergy_title: "Sinergia de marcas",
+                synergy_text: "Nuestro modelo de negocio se basa en el intercambio de valor entre marcas.",
+                academy_cta: "Únete a la Academy",
+                digital_cta: "Iniciar transformación",
+                interiors_cta: "Diseñar el futuro",
+                contact_title: "Contacto",
+                contact_name: "Nombre",
+                contact_email: "E-mail",
+                contact_msg: "Mensaje",
+                contact_send: "Enviar mensaje",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. Todos los derechos reservados."
+            },
+            ru: {
+                nav_home: "Главная",
+                nav_brands: "Бренды",
+                nav_philosophy: "Философия",
+                nav_synergy: "Синергия",
+                nav_contact: "Контакт",
+                hero_title: "Мы строим империи.",
+                hero_subtitle: "Знания. Инструменты. Исполнение. Доминирование.",
+                brands_title: "Наши бренды",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Обучение финансовой и деловой элиты.",
+                brand_more: "Подробнее",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Передовые технологические решения и маркетинг.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Дизайн и реализация люксовых пространств.",
+                philosophy_title: "Философия Syndicate",
+                philosophy_text: "В основе Veles Syndicate лежит убеждение, что истинное доминирование на рынке проистекает из гармоничного сочетания знаний, технологий и эстетики.",
+                synergy_title: "Синергия брендов",
+                synergy_text: "Наша бизнес-модель основана на обмене ценностями между брендами.",
+                academy_cta: "Вступить в Academy",
+                digital_cta: "Начать трансформацию",
+                interiors_cta: "Проектировать будущее",
+                contact_title: "Контакт",
+                contact_name: "Имя и фамилия",
+                contact_email: "E-mail",
+                contact_msg: "Сообщение",
+                contact_send: "Отправить сообщение",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. Все права защищены."
+            },
+            ua: {
+                nav_home: "Головна",
+                nav_brands: "Бренди",
+                nav_philosophy: "Філософія",
+                nav_synergy: "Синергія",
+                nav_contact: "Контакт",
+                hero_title: "Ми будуємо імперії.",
+                hero_subtitle: "Знання. Інструменти. Виконання. Домінування.",
+                brands_title: "Наші бренди",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "Навчання фінансової та ділової еліти.",
+                brand_more: "Детальніше",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "Передові технологічні рішення та маркетинг.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "Дизайн та реалізація люксових просторів.",
+                philosophy_title: "Філософія Syndicate",
+                philosophy_text: "В основі Veles Syndicate лежить переконання, що справжнє домінування на ринку випливає з гармонійного поєднання знань, технологій та естетики.",
+                synergy_title: "Синергія брендів",
+                synergy_text: "Наша бізнес-модель заснована на обміні цінностями між брендами.",
+                academy_cta: "Вступити до Academy",
+                digital_cta: "Почати трансформацію",
+                interiors_cta: "Проектувати майбутнє",
+                contact_title: "Контакт",
+                contact_name: "Ім'я та прізвище",
+                contact_email: "E-mail",
+                contact_msg: "Повідомлення",
+                contact_send: "Надіслати повідомлення",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. Усі права захищені."
+            },
+            zh: {
+                nav_home: "首页",
+                nav_brands: "品牌",
+                nav_philosophy: "哲学",
+                nav_synergy: "协同",
+                nav_contact: "联系我们",
+                hero_title: "我们建立帝国。",
+                hero_subtitle: "知识。工具。执行。统治。",
+                brands_title: "我们的品牌",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "金融和商业精英的教育。",
+                brand_more: "更多",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "先进的技术解决方案和营销。",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "豪华空间的设计与实现。",
+                philosophy_title: "Syndicate 哲学",
+                philosophy_text: "Veles Syndicate 的核心信念是，真正的市场主导地位源于知识、技术和美学的和谐融合。",
+                synergy_title: "品牌协同",
+                synergy_text: "我们的商业模式基于品牌之间的价值交换。",
+                academy_cta: "加入学院",
+                digital_cta: "开始转型",
+                interiors_cta: "设计未来",
+                contact_title: "联系我们",
+                contact_name: "姓名",
+                contact_email: "电子邮件",
+                contact_msg: "留言",
+                contact_send: "发送信息",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. 版权所有。"
+            },
+            ja: {
+                nav_home: "ホーム",
+                nav_brands: "ブランド",
+                nav_philosophy: "哲学",
+                nav_synergy: "シナジー",
+                nav_contact: "お問い合わせ",
+                hero_title: "帝国を築く。",
+                hero_subtitle: "知識。道具。実行。支配。",
+                brands_title: "私たちのブランド",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "金融・ビジネスエリートの教育。",
+                brand_more: "もっと見る",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "高度な技術ソリューションとマーケティング。",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "豪華な空間のデザインと実現。",
+                philosophy_title: "Syndicate の哲学",
+                philosophy_text: "Veles Syndicateの核心には、真の市場支配は知識、技術、そして美学の調和のとれた融合から生まれるという信念があります。",
+                synergy_title: "ブランドシナジー",
+                synergy_text: "私たちのビジネスモデルは、ブランド間の価値交換に基づいています。",
+                academy_cta: "アカデミーに入会する",
+                digital_cta: "変革を開始する",
+                interiors_cta: "未来をデザインする",
+                contact_title: "お問い合わせ",
+                contact_name: "氏名",
+                contact_email: "メールアドレス",
+                contact_msg: "メッセージ",
+                contact_send: "メッセージを送信",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. 全著作権所有。"
+            },
+            ko: {
+                nav_home: "홈",
+                nav_brands: "브랜드",
+                nav_philosophy: "철학",
+                nav_synergy: "시너지",
+                nav_contact: "연락처",
+                hero_title: "우리는 제국을 건설합니다.",
+                hero_subtitle: "지식. 도구. 실행. 지배.",
+                brands_title: "우리의 브랜드",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "금융 및 비즈니스 엘리트 교육.",
+                brand_more: "더 보기",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "고급 기술 솔루션 및 마케팅.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "고급 공간의 디자인 및 구현.",
+                philosophy_title: "Syndicate 철학",
+                philosophy_text: "Veles Syndicate의 핵심에는 진정한 시장 지배력이 지식, 기술 및 미학의 조화로운 결합에서 나온다는 믿음이 있습니다.",
+                synergy_title: "브랜드 시너지",
+                synergy_text: "우리의 비즈니스 모델은 브랜드 간의 가치 교환을 기반으로 합니다.",
+                academy_cta: "아카데미 가입",
+                digital_cta: "변혁 시작",
+                interiors_cta: "미래 설계",
+                contact_title: "연락처",
+                contact_name: "성함",
+                contact_email: "이메일",
+                contact_msg: "메시지",
+                contact_send: "메시지 보내기",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. 모든 권리 보유."
+            },
+            hi: {
+                nav_home: "होम",
+                nav_brands: "ब्रांड्स",
+                nav_philosophy: "दर्शन",
+                nav_synergy: "तालमेल",
+                nav_contact: "संपर्क",
+                hero_title: "हम साम्राज्य बनाते हैं।",
+                hero_subtitle: "ज्ञान। उपकरण। निष्पादन। प्रभुत्व।",
+                brands_title: "हमारे ब्रांड्स",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "वित्तीय और व्यावसायिक अभिजात वर्ग की शिक्षा।",
+                brand_more: "अधिक",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "उन्नत तकनीकी समाधान और विपणन।",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "लक्जरी स्थानों का डिजाइन और अहसास।",
+                philosophy_title: "Syndicate दर्शन",
+                philosophy_text: "Veles Syndicate के मूल में यह विश्वास है कि सच्चा बाजार प्रभुत्व ज्ञान, प्रौद्योगिकी और सौंदर्यशास्त्र के सामंजस्यपूर्ण मिश्रण से आता है।",
+                synergy_title: "ब्रांड तालमेल",
+                synergy_text: "हमारा बिजनेस मॉडल ब्रांडों के बीच मूल्य विनिमय पर आधारित है।",
+                academy_cta: "अकादमी में शामिल हों",
+                digital_cta: "परिवर्तन शुरू करें",
+                interiors_cta: "भविष्य को डिजाइन करें",
+                contact_title: "संपर्क",
+                contact_name: "नाम",
+                contact_email: "ई-मेल",
+                contact_msg: "संदेश",
+                contact_send: "संदेश भेजें",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. सर्वाधिकार सुरक्षित।"
+            },
+            ar: {
+                nav_home: "الرئيسية",
+                nav_brands: "العلامات التجارية",
+                nav_philosophy: "الفلسفة",
+                nav_synergy: "التآزر",
+                nav_contact: "اتصل بنا",
+                hero_title: "نحن نبني الإمبراطوريات.",
+                hero_subtitle: "المعرفة. الأدوات. التنفيذ. الهيمنة.",
+                brands_title: "علاماتنا التجارية",
+                brand_academy_title: "Syndicate Academy",
+                brand_academy_desc: "تعليم النخب المالية والتجارية.",
+                brand_more: "المزيد",
+                brand_digital_title: "Syndicate Digital",
+                brand_digital_desc: "الحلول التكنولوجية المتقدمة والتسويق.",
+                brand_interiors_title: "Syndicate Interiors",
+                brand_interiors_desc: "تصميم وتنفيذ المساحات الفاخرة.",
+                philosophy_title: "فلسفة Syndicate",
+                philosophy_text: "تقوم Veles Syndicate على الاعتقاد بأن الهيمنة الحقيقية على السوق تأتي من مزيج متناغم من المعرفة والتكنولوجيا والجماليات.",
+                synergy_title: "تآزر العلامات التجارية",
+                synergy_text: "يعتمد نموذج عملنا على تبادل القيمة بين العلامات التجارية.",
+                academy_cta: "انضم إلى الأكاديمية",
+                digital_cta: "ابدأ التحول",
+                interiors_cta: "صمم المستقبل",
+                contact_title: "اتصل بنا",
+                contact_name: "الاسم الكامل",
+                contact_email: "البريد الإلكتروني",
+                contact_msg: "الرسالة",
+                contact_send: "إرسال الرسالة",
+                footer_rights: "© 2024 Veles Syndicate Sp. z o.o. جميع الحقوق محفوظة."
+            }
+        };
+
+        let currentLang = 'pl';
+
+        /**
+         * Zmiana języka strony
+         */
+        function setLanguage(lang) {
+            if (!translations[lang]) return;
+            currentLang = lang;
+            localStorage.setItem('veles_lang', lang);
+
+            // Obsługa RTL
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.classList.add('rtl');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.classList.remove('rtl');
+            }
+
+            // Tłumaczenie elementów z atrybutem data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Tłumaczenie placeholderów
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+
+            // Aktualizacja URL bez przeładowania (jeśli jest hash)
+            const currentHash = window.location.hash.split('?')[0];
+            window.history.replaceState(null, '', `${currentHash}?lang=${lang}`);
+
+            // Aktywacja przycisku w selektorze (zostanie dodane później)
+            updateLangSelectorUI(lang);
+        }
+
+        function updateLangSelectorUI(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
+        }
+
+        /**
+         * Nawigacja SPA
+         */
+        function navigateTo(sectionId) {
+            document.querySelectorAll('main section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.location.hash = `#/${sectionId}?lang=${currentLang}`;
+            }
+        }
+
+        /**
+         * Inicjalizacja przy ładowaniu
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            // Wykrywanie języka
+            const getLangFromUrl = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                let lang = urlParams.get('lang');
+                if (!lang && window.location.hash.includes('?')) {
+                    const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+                    lang = hashParams.get('lang');
+                }
+                return lang;
+            };
+
+            const langParam = getLangFromUrl();
+            const storedLang = localStorage.getItem('veles_lang');
+            const browserLang = navigator.language.split('-')[0];
+
+            let langToSet = 'pl';
+            if (langParam && translations[langParam]) {
+                langToSet = langParam;
+            } else if (storedLang && translations[storedLang]) {
+                langToSet = storedLang;
+            } else if (translations[browserLang]) {
+                langToSet = browserLang;
+            }
+
+            setLanguage(langToSet);
+
+            // Obsługa hasha dla SPA
+            const handleHash = () => {
+                const hash = window.location.hash;
+                if (hash) {
+                    const sectionMatch = hash.match(/#\/([^?]+)/);
+                    if (sectionMatch && sectionMatch[1]) {
+                        // Unikamy zapętlenia jeśli już jesteśmy w tej sekcji
+                        const targetId = sectionMatch[1];
+                        const currentActive = document.querySelector('main section.active');
+                        if (!currentActive || currentActive.id !== targetId) {
+                            navigateTo(targetId);
+                        }
+                    }
+                }
+            };
+
+            window.addEventListener('hashchange', handleHash);
+            handleHash();
+            initHeroCanvas();
+            init3DTilt();
+            initMagneticButtons();
+        });
+
+        /**
+         * Magnetic Buttons
+         */
+        function initMagneticButtons() {
+            const btns = document.querySelectorAll('.btn-3d');
+
+            btns.forEach(btn => {
+                btn.addEventListener('mousemove', e => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+
+                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = `translate(0, 0)`;
+                });
+            });
+        }
+
+        /**
+         * 3D Tilt Effect
+         */
+        function init3DTilt() {
+            const cards = document.querySelectorAll('.card-3d-wrap');
+
+            cards.forEach(wrap => {
+                const card = wrap.querySelector('.card-3d');
+                const color = wrap.getAttribute('data-color');
+
+                // Set glow color based on brand color
+                if (color) {
+                    card.style.setProperty('--glow-color', color.replace(')', ', 0.2)'));
+                }
+
+                wrap.addEventListener('mousemove', e => {
+                    const rect = wrap.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                });
+
+                wrap.addEventListener('mouseleave', () => {
+                    card.style.transform = `rotateX(0) rotateY(0)`;
+                });
+            });
+        }
+
+        /**
+         * Hero Canvas - Golden Particles
+         */
+        function initHeroCanvas() {
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.init();
+                }
+                init() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = Math.random() * 0.5 - 0.25;
+                    this.speedY = Math.random() * 0.5 - 0.25;
+                    this.alpha = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(212, 175, 55, ${this.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
