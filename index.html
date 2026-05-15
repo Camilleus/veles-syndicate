@@ -9,6 +9,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        syndicate: '#D4AF37',
+                        copper: '#b17a50',
+                        academy: '#44C060',
+                        digital: '#0170F5',
+                        construction: '#FF3131',
+                        'dark-bg': '#0A0A0A',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
         /* Zmienne CSS definiujące paletę barw i parametry wizualne */
         :root {
@@ -18,6 +39,8 @@
             --green: #44C060;
             --blue: #0170F5;
             --red: #FF3131;
+            --copper: #b17a50;
+            --copper-glow: rgba(177, 122, 80, 0.3);
             
             /* Domyślny Dark Mode */
             --bg-main: #0A0A0A;
@@ -261,7 +284,10 @@
         @media (max-width: 900px) { .asymmetric-layout { grid-template-columns: 1fr; } }
 
         .brand-detail { width: 100%; max-width: 1200px; }
-        .content-text { color: var(--text-dim); line-height: 1.8; }
+        .content-text { color: var(--text-dim); line-height: 1.8; font-size: 1.1rem; }
+        @media (min-width: 768px) {
+            .content-text { font-size: 1.25rem; }
+        }
 
         /* Cookie Banner */
         #cookie-banner {
@@ -331,50 +357,69 @@
     </header>
 
     <main id="spa-root">
-        <section id="hero" class="active">
+        <section id="hero" class="active relative overflow-hidden">
             <canvas id="hero-canvas"></canvas>
-            <div class="hero-content">
-                <div style="margin-bottom: 40px; display: flex; justify-content: center;">
-                    <img src="veles-syndicate-logo-alone-bgless-golden.png" class="hero-logo-img" alt="Veles Syndicate">
+            <div class="hero-content relative z-10 text-center px-4">
+                <div class="mb-12 flex justify-center">
+                    <img src="veles-syndicate-logo-alone-bgless-golden.png" class="hero-logo-img w-48 md:w-64" alt="Veles Syndicate">
                 </div>
-                <h1 data-i18n="hero_title">Budujemy imperia.</h1>
-                <p data-i18n="hero_subtitle" class="hero-subtitle">Wiedza. Narzędzia. Wykonanie. Dominacja.</p>
-                <div class="hero-cta">
-                    <button onclick="navigateTo('brands')" class="btn-3d" data-i18n="nav_brands">Marki</button>
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-tight mb-8 bg-gradient-to-b from-white via-white to-syndicate bg-clip-text text-transparent uppercase font-heading" data-i18n="hero_title">
+                    Budujemy imperia.
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-400 font-light tracking-wide mb-12 max-w-3xl mx-auto" data-i18n="hero_subtitle">
+                    Wiedza. Narzędzia. Wykonanie. Dominacja.
+                </p>
+                <div class="hero-cta flex flex-wrap justify-center gap-6">
+                    <button onclick="navigateTo('brands')" class="btn-3d px-10 py-5 text-lg" data-i18n="nav_brands">Odkryj Marki</button>
+                    <button onclick="navigateTo('contact')" class="btn-3d px-10 py-5 text-lg border-white/20 text-white hover:bg-white hover:text-black" data-i18n="nav_contact">Kontakt</button>
                 </div>
             </div>
         </section>
 
-        <section id="brands">
-            <h2 data-i18n="brands_title">Nasze Marki</h2>
-            <div class="brands-grid">
-                <div class="card-3d-wrap" style="--brand-color: var(--green);" data-color="var(--green)" onclick="navigateTo('brand-academy')">
-                    <div class="card-3d">
+        <section id="brands" class="py-24">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 font-heading" data-i18n="brands_title">Nasze Marki</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto px-4">
+                <!-- Academy -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--green);" data-color="var(--green)" onclick="navigateTo('brand-academy')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
                         <div class="card-shine"></div>
-                        <div class="card-content">
-                            <img src="veles-academy-logo-alone-bgless.png" class="brand-logo-img" alt="Academy">
-                            <h3 class="card-title">VELES ACADEMY</h3>
-                            <p class="card-desc" data-i18n="brand_academy_desc">Edukacja elit finansowych.</p>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-academy-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Academy">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES ACADEMY</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_academy_desc">Edukacja elit finansowych.</p>
                         </div>
                     </div>
                 </div>
-                <div class="card-3d-wrap" style="--brand-color: var(--blue);" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
-                    <div class="card-3d">
+                <!-- Strategy -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--copper);" data-color="var(--copper)" onclick="navigateTo('brand-strategy')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
                         <div class="card-shine"></div>
-                        <div class="card-content">
-                            <img src="veles-digital-logo-alone-bgless.png" class="brand-logo-img" alt="Digital">
-                            <h3 class="card-title">VELES DIGITAL</h3>
-                            <p class="card-desc" data-i18n="brand_digital_desc">Technologia i SaaS.</p>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-strategy-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Strategy">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES STRATEGY</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_strategy_desc">Strategia i Turnaround.</p>
                         </div>
                     </div>
                 </div>
-                <div class="card-3d-wrap" style="--brand-color: var(--red);" data-color="var(--red)" onclick="navigateTo('brand-construction')">
-                    <div class="card-3d">
+                <!-- Digital -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--blue);" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
                         <div class="card-shine"></div>
-                        <div class="card-content">
-                            <img src="veles-construction-logo-alone-bgless.png" class="brand-logo-img" alt="Construction">
-                            <h3 class="card-title">VELES CONSTRUCTION</h3>
-                            <p class="card-desc" data-i18n="brand_construction_desc">Budownictwo przemysłowe.</p>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-digital-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Digital">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES DIGITAL</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_digital_desc">Technologia i SaaS.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Construction -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--red);" data-color="var(--red)" onclick="navigateTo('brand-construction')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
+                        <div class="card-shine"></div>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-construction-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Construction">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES CONSTRUCTION</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_construction_desc">Budownictwo przemysłowe.</p>
                         </div>
                     </div>
                 </div>
@@ -423,6 +468,27 @@
             </div>
         </section>
 
+        <section id="brand-strategy">
+            <div class="brand-detail">
+                <h2 data-i18n="brand_strategy_title">VELES STRATEGY</h2>
+                <div class="asymmetric-layout">
+                    <div>
+                        <h3 data-i18n="brand_mission" style="color: var(--copper); margin-bottom: 10px;">Misja</h3>
+                        <p class="content-text" data-i18n="brand_strategy_mission_text">Optymalizacja procesów biznesowych i przywracanie rentowności przedsiębiorstwom w kryzysie.</p>
+                        <h3 data-i18n="brand_vision" style="color: var(--copper); margin: 20px 0 10px;">Wizja</h3>
+                        <p class="content-text" data-i18n="brand_strategy_vision_text">Wyznaczanie standardów doskonałości operacyjnej i strategicznej na rynku europejskim.</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border-left: 3px solid var(--copper);">
+                        <h4 data-i18n="brand_why" style="color: var(--gold); margin-bottom: 10px;">WHY?</h4>
+                        <p data-i18n="brand_strategy_why_text">Wierzymy, że każda firma zasługuje na drugą szansę i precyzyjne plan działania.</p>
+                        <h4 data-i18n="brand_what" style="color: var(--gold); margin-top: 20px; margin-bottom: 10px;">WHAT?</h4>
+                        <p data-i18n="brand_strategy_what_text">Audyt operacyjny, restrukturyzacja finansowa, strategie wzrostu.</p>
+                    </div>
+                </div>
+                <button onclick="navigateTo('contact')" class="btn-3d" style="margin-top: 50px;" data-i18n="strategy_cta">Napraw swój biznes</button>
+            </div>
+        </section>
+
         <section id="brand-construction">
             <div class="brand-detail">
                 <h2 data-i18n="brand_construction_title">VELES CONSTRUCTION</h2>
@@ -444,14 +510,38 @@
             </div>
         </section>
 
-        <section id="philosophy">
-            <h2 data-i18n="philosophy_title">Filozofia Syndicate</h2>
-            <p class="content-text" data-i18n="philosophy_text" style="text-align: center;">U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.</p>
+        <section id="philosophy" class="py-24">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-12 font-heading" data-i18n="philosophy_title">Filozofia Syndicate</h2>
+            <div class="max-w-4xl mx-auto px-4">
+                <p class="content-text text-xl md:text-3xl text-center leading-relaxed" data-i18n="philosophy_text">U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.</p>
+            </div>
         </section>
 
-        <section id="synergy">
-            <h2 data-i18n="synergy_title">Synergia marek</h2>
-            <p class="content-text" data-i18n="synergy_text" style="text-align: center;">Nasz model biznesowy opiera się na wymianie wartości między markami.</p>
+        <section id="synergy" class="py-24">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 font-heading" data-i18n="synergy_title">Synergia marek</h2>
+            <div class="asymmetric-layout max-w-6xl mx-auto px-4">
+                <div class="space-y-8">
+                    <p class="content-text text-xl" data-i18n="synergy_text">Nasz model biznesowy opiera się na wymianie wartości między markami.</p>
+                    <div class="p-8 bg-white/5 rounded-2xl border border-white/10">
+                        <h3 class="text-copper font-bold mb-4 font-heading" data-i18n="synergy_strategy_title">VELES STRATEGY: MÓZG EKOSYSTEMU</h3>
+                        <p class="text-gray-400" data-i18n="synergy_strategy_desc">Veles Strategy stanowi rdzeń analityczny i strategiczny całego Syndicate. To tutaj powstają plany ekspansji, optymalizacji i ratowania przedsiębiorstw, które są następnie realizowane przez pozostałe marki.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-6 bg-academy/10 rounded-xl border border-academy/20 text-center">
+                        <span class="text-academy font-bold" data-i18n="synergy_box_knowledge">Wiedza</span>
+                    </div>
+                    <div class="p-6 bg-digital/10 rounded-xl border border-digital/20 text-center">
+                        <span class="text-digital font-bold" data-i18n="synergy_box_tech">Technologia</span>
+                    </div>
+                    <div class="p-6 bg-construction/10 rounded-xl border border-construction/20 text-center">
+                        <span class="text-construction font-bold" data-i18n="synergy_box_execution">Realizacja</span>
+                    </div>
+                    <div class="p-6 bg-copper/10 rounded-xl border border-copper/20 text-center">
+                        <span class="text-copper font-bold" data-i18n="synergy_box_strategy">Strategia</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="privacy">
@@ -473,10 +563,31 @@
         </section>
     </main>
 
-    <footer>
-        <div style="text-align: center; padding: 40px;">
-            <p data-i18n="footer_rights">© 2026 Veles Syndicate Sp. z o.o.</p>
-            <a href="#/privacy" style="color: var(--text-dim); font-size: 0.8rem; text-decoration: underline;" data-i18n="cookie_privacy">Polityka prywatności</a>
+    <footer class="bg-[#050505] border-t border-white/5 py-12 px-5">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-1">
+                <img src="veles-syndicate-logo-alone-bgless-golden.png" class="w-12 mb-6" alt="Veles Syndicate">
+                <p class="text-sm text-gray-500" data-i18n="footer_rights">© 2026 Veles Syndicate Sp. z o.o.</p>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-syndicate font-bold text-xs uppercase tracking-widest">Ecosystem</h4>
+                <ul class="text-sm text-gray-400 space-y-2">
+                    <li><a href="https://velesacademy.app" class="hover:text-academy transition-colors">Veles Academy</a></li>
+                    <li><a href="https://velesdigital.pl" class="hover:text-digital transition-colors">Veles Digital</a></li>
+                    <li><a href="https://velesconstruction.pl" class="hover:text-construction transition-colors">Veles Construction</a></li>
+                    <li><a href="#/brand-strategy" class="hover:text-copper transition-colors">Veles Strategy</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-syndicate font-bold text-xs uppercase tracking-widest">Legal</h4>
+                <ul class="text-sm text-gray-400 space-y-2">
+                    <li><a onclick="navigateTo('privacy')" class="hover:text-white cursor-pointer" data-i18n="cookie_privacy">Polityka prywatności</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-syndicate font-bold text-xs uppercase tracking-widest">Contact</h4>
+                <p class="text-sm text-gray-400">kontakt@velesdigital.pl</p>
+            </div>
         </div>
     </footer>
 
@@ -505,6 +616,8 @@
         "brand_digital_desc": "SaaS, Websites, Marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Budownictwo, hale, instalacje przemysłowe",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Strategia wzrostu, turnaround i egzekucja. Naprawiamy firmy, które tracą pieniądze.",
         "brand_more": "Więcej",
         "philosophy_title": "Filozofia Syndicate",
         "philosophy_text": "U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.",
@@ -513,6 +626,7 @@
         "academy_cta": "Wstąp do Academy",
         "digital_cta": "Rozpocznij transformację",
         "construction_cta": "Zbuduj przyszłość",
+        "strategy_cta": "Napraw swój biznes",
         "contact_title": "Kontakt",
         "contact_name": "Imię i nazwisko",
         "contact_email": "E-mail",
@@ -535,6 +649,16 @@
         "brand_construction_vision_text": "Wyznaczanie nowych standardów w budownictwie przemysłowym i technologii hal.",
         "brand_construction_why_text": "Solidne fundamenty są podstawą każdego imperium.",
         "brand_construction_what_text": "Konstrukcje stalowe, instalacje przemysłowe, zarządzanie budową.",
+        "brand_strategy_mission_text": "Optymalizacja procesów biznesowych i przywracanie rentowności przedsiębiorstwom w kryzysie.",
+        "brand_strategy_vision_text": "Wyznaczanie standardów doskonałości operacyjnej i strategicznej na rynku europejskim.",
+        "brand_strategy_why_text": "Wierzymy, że każda firma zasługuje na drugą szansę i precyzyjny plan działania.",
+        "brand_strategy_what_text": "Audyt operacyjny, restrukturyzacja finansowa, strategie wzrostu.",
+        "synergy_strategy_title": "VELES STRATEGY: MÓZG EKOSYSTEMU",
+        "synergy_strategy_desc": "Veles Strategy stanowi rdzeń analityczny i strategiczny całego Syndicate. To tutaj powstają plany ekspansji, optymalizacji i ratowania przedsiębiorstw, które są następnie realizowane przez pozostałe marki.",
+        "synergy_box_knowledge": "Wiedza",
+        "synergy_box_tech": "Technologia",
+        "synergy_box_execution": "Realizacja",
+        "synergy_box_strategy": "Strategia",
         "cookie_text": "Ta strona używa plików cookies w celu poprawy doświadczenia użytkownika. Możesz zaakceptować wszystkie lub tylko niezbędne.",
         "cookie_accept": "Akceptuję",
         "cookie_essential": "Tylko niezbędne",
@@ -556,6 +680,8 @@
         "brand_digital_desc": "SaaS, Websites, Marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Construction, halls, industrial installations",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Growth strategy, turnaround, and execution. We fix companies that lose money.",
         "brand_more": "More",
         "philosophy_title": "Syndicate Philosophy",
         "philosophy_text": "At the heart of Veles Syndicate lies the belief that true market dominance comes from a harmonious blend of knowledge, technology, and aesthetics.",
@@ -564,6 +690,7 @@
         "academy_cta": "Join the Academy",
         "digital_cta": "Start transformation",
         "construction_cta": "Build the future",
+        "strategy_cta": "Fix your business",
         "contact_title": "Contact",
         "contact_name": "Full Name",
         "contact_email": "E-mail",
@@ -586,6 +713,16 @@
         "brand_construction_vision_text": "Setting new standards in industrial construction and hall technology.",
         "brand_construction_why_text": "Solid foundations are the basis of every empire.",
         "brand_construction_what_text": "Steel structures, industrial installations, construction management.",
+        "brand_strategy_mission_text": "Optimizing business processes and restoring profitability to companies in crisis.",
+        "brand_strategy_vision_text": "Setting standards for operational and strategic excellence in the European market.",
+        "brand_strategy_why_text": "We believe that every company deserves a second chance and a precise action plan.",
+        "brand_strategy_what_text": "Operational audit, financial restructuring, growth strategies.",
+        "synergy_strategy_title": "VELES STRATEGY: THE ECOSYSTEM BRAIN",
+        "synergy_strategy_desc": "Veles Strategy is the analytical and strategic core of the entire Syndicate. This is where expansion, optimization, and turnaround plans are born, which are then executed by the other brands.",
+        "synergy_box_knowledge": "Knowledge",
+        "synergy_box_tech": "Technology",
+        "synergy_box_execution": "Execution",
+        "synergy_box_strategy": "Strategy",
         "cookie_text": "This website uses cookies to improve user experience. You can accept all or only essential ones.",
         "cookie_accept": "Accept all",
         "cookie_essential": "Essential only",
@@ -607,6 +744,8 @@
         "brand_digital_desc": "SaaS, Websites, Marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Bauwesen, Hallen, Industrieanlagen",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Wachstumsstrategie, Turnaround und Ausführung. Wir reparieren Unternehmen, die Geld verlieren.",
         "brand_more": "Mehr",
         "philosophy_title": "Syndicate-Philosophie",
         "philosophy_text": "Veles Syndicate basiert auf der Überzeugung, dass wahre Marktdominanz aus einer harmonischen Mischung von Wissen, Technologie und Ästhetik resultiert.",
@@ -615,6 +754,7 @@
         "academy_cta": "Treten Sie der Academy bei",
         "digital_cta": "Transformation starten",
         "construction_cta": "Zukunft bauen",
+        "strategy_cta": "Reparieren Sie Ihr Geschäft",
         "contact_title": "Kontakt",
         "contact_name": "Name",
         "contact_email": "E-Mail",
@@ -637,6 +777,16 @@
         "brand_construction_vision_text": "Setzen neuer Maßstäbe im Industriebau und in der Hallentechnik.",
         "brand_construction_why_text": "Solide Fundamente sind die Basis jedes Imperiums.",
         "brand_construction_what_text": "Stahlkonstruktionen, Industrieanlagen, Baumanagement.",
+        "brand_strategy_mission_text": "Optimierung von Geschäftsprozessen und Wiederherstellung der Rentabilität von Unternehmen in der Krise.",
+        "brand_strategy_vision_text": "Setzen von Standards für operative und strategische Exzellenz auf dem europäischen Markt.",
+        "brand_strategy_why_text": "Wir glauben, dass jedes Unternehmen eine zweite Chance und einen präzisen Aktionsplan verdient.",
+        "brand_strategy_what_text": "Operatives Audit, finanzielle Restrukturierung, Wachstumsstrategien.",
+        "synergy_strategy_title": "VELES STRATEGY: DAS GEHIRN DES ÖKOSYSTEMS",
+        "synergy_strategy_desc": "Veles Strategy bildet den analytischen und strategischen Kern des gesamten Syndicate. Hier entstehen Expansions-, Optimierungs- und Turnaround-Pläne, die dann von den anderen Marken umgesetzt werden.",
+        "synergy_box_knowledge": "Wissen",
+        "synergy_box_tech": "Technologie",
+        "synergy_box_execution": "Ausführung",
+        "synergy_box_strategy": "Strategie",
         "cookie_text": "Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern. Sie können alle oder nur notwendige akzeptieren.",
         "cookie_accept": "Akzeptieren",
         "cookie_essential": "Nur notwendige",
@@ -658,6 +808,8 @@
         "brand_digital_desc": "SaaS, sites web, marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Construction, halls, installations industrielles",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Stratégie de croissance, redressement et exécution. Nous réparons les entreprises qui perdent de l'argent.",
         "brand_more": "Plus",
         "philosophy_title": "Philosophie de Syndicate",
         "philosophy_text": "Veles Syndicate repose sur la conviction que la véritable domination du marché provient d’un mélange harmonieux de connaissances, de technologie et d’esthétique.",
@@ -666,6 +818,7 @@
         "academy_cta": "Rejoindre l’Academy",
         "digital_cta": "Démarrer la transformation",
         "construction_cta": "Construire l'avenir",
+        "strategy_cta": "Réparez votre entreprise",
         "contact_title": "Contact",
         "contact_name": "Nom",
         "contact_email": "E-mail",
@@ -686,8 +839,18 @@
         "brand_digital_what_text": "SaaS, Logiciels sur mesure, automatisation du marketing, intégration de l'IA.",
         "brand_construction_mission_text": "Construire une infrastructure durable pour l'industrie du futur avec une attention portée à chaque détail.",
         "brand_construction_vision_text": "Établir de nouvelles normes dans la construction industrielle et la technologie des halls.",
-        "brand_construction_why_text": "Des fondations solides są podstawą każdego imperium.",
+        "brand_construction_why_text": "Des fondations solides sont la base de tout empire.",
         "brand_construction_what_text": "Structures métalliques, installations industrielles, gestion de construction.",
+        "brand_strategy_mission_text": "Optimisation des processus d'affaires et rétablissement de la rentabilité des entreprises en crise.",
+        "brand_strategy_vision_text": "Établir des normes d'excellence opérationnelle et stratégique sur le marché européen.",
+        "brand_strategy_why_text": "Nous pensons que chaque entreprise mérite une seconde chance et un plan d'action précis.",
+        "brand_strategy_what_text": "Audit opérationnel, restructuration financière, stratégies de croissance.",
+        "synergy_strategy_title": "VELES STRATEGY : LE CERVEAU DE L'ÉCOSYSTÈME",
+        "synergy_strategy_desc": "Veles Strategy constitue le noyau analytique et stratégique de l'ensemble du Syndicate. C'est ici que naissent les plans d'expansion, d'optimisation et de redressement, qui sont ensuite exécutés par les autres marques.",
+        "synergy_box_knowledge": "Connaissance",
+        "synergy_box_tech": "Technologie",
+        "synergy_box_execution": "Exécution",
+        "synergy_box_strategy": "Stratégie",
         "cookie_text": "Ce site web utilise des cookies pour améliorer l'expérience utilisateur. Vous pouvez accepter tout ou seulement les essentiels.",
         "cookie_accept": "Accepter",
         "cookie_essential": "Essentiels seulement",
@@ -709,6 +872,8 @@
         "brand_digital_desc": "SaaS, sitios web, marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Construcción, naves, instalaciones industriales",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Estrategia de crecimiento, recuperación y ejecución. Reparamos empresas que pierden dinero.",
         "brand_more": "Más",
         "philosophy_title": "Filosofía de Syndicate",
         "philosophy_text": "Veles Syndicate se basa en la convicción de que el verdadero dominio del mercado proviene de una combinación armoniosa de conocimiento, tecnología y estética.",
@@ -717,6 +882,7 @@
         "academy_cta": "Únete a la Academy",
         "digital_cta": "Iniciar transformación",
         "construction_cta": "Construir el futuro",
+        "strategy_cta": "Repare su negocio",
         "contact_title": "Contacto",
         "contact_name": "Nombre",
         "contact_email": "E-mail",
@@ -737,8 +903,18 @@
         "brand_digital_what_text": "SaaS, software a medida, automatización de marketing, integración de IA.",
         "brand_construction_mission_text": "Construir una infraestructura duradera para la industria del futuro con atención a cada detalle.",
         "brand_construction_vision_text": "Establecer nuevos estándares en la construcción industrial y tecnología de naves.",
-        "brand_construction_why_text": "Unos cimientos sólidos są podstawą każdego imperium.",
+        "brand_construction_why_text": "Unos cimientos sólidos son la base de todo imperio.",
         "brand_construction_what_text": "Estructuras de acero, instalaciones industriales, gestión de obra.",
+        "brand_strategy_mission_text": "Optimización de procesos de negocio y recuperación de la rentabilidad de empresas en crisis.",
+        "brand_strategy_vision_text": "Establecer estándares de excelencia operativa y estratégica en el mercado europeo.",
+        "brand_strategy_why_text": "Creemos que cada empresa merece una segunda oportunidad y un plan de acción preciso.",
+        "brand_strategy_what_text": "Auditoría operativa, reestructuración financiera, estrategias de crecimiento.",
+        "synergy_strategy_title": "VELES STRATEGY: EL CEREBRO DEL ECOSISTEMA",
+        "synergy_strategy_desc": "Veles Strategy constituye el núcleo analítico y estratégico de todo el Syndicate. Aquí nacen los planes de expansión, optimización y recuperación, que luego son ejecutados por las demás marcas.",
+        "synergy_box_knowledge": "Conocimiento",
+        "synergy_box_tech": "Tecnología",
+        "synergy_box_execution": "Ejecución",
+        "synergy_box_strategy": "Estrategia",
         "cookie_text": "Este sitio web utiliza cookies para mejorar la experiencia del usuario. Puede aceptar todas o solo las esenciales.",
         "cookie_accept": "Aceptar",
         "cookie_essential": "Solo esenciales",
@@ -760,6 +936,8 @@
         "brand_digital_desc": "SaaS, веб-сайты, маркетинг",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Строительство, залы, промышленные установки",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Стратегия роста, оздоровление и исполнение. Мы восстанавливаем компании, которые теряют деньги.",
         "brand_more": "Подробнее",
         "philosophy_title": "Философия Syndicate",
         "philosophy_text": "В основе Veles Syndicate лежит убеждение, что истинное доминирование на рынке проистекает из гармоничного сочетания знаний, технологий и эстетики.",
@@ -768,6 +946,7 @@
         "academy_cta": "Вступить в Academy",
         "digital_cta": "Начать трансформацию",
         "construction_cta": "Строить будущее",
+        "strategy_cta": "Исправьте свой бизнес",
         "contact_title": "Контакт",
         "contact_name": "Имя и фамилия",
         "contact_email": "E-mail",
@@ -790,6 +969,16 @@
         "brand_construction_vision_text": "Установление новых стандартов в промышленном строительстве и технологиях залов.",
         "brand_construction_why_text": "Прочный фундамент — основа каждой империи.",
         "brand_construction_what_text": "Стальные конструкции, промышленные установки, управление строительством.",
+        "brand_strategy_mission_text": "Оптимизация бизнес-процессов и восстановление прибыльности предприятий в кризисе.",
+        "brand_strategy_vision_text": "Установление стандартов операционного и стратегического совершенства на европейском рынке.",
+        "brand_strategy_why_text": "Мы верим, что каждая компания заслуживает второго шанса и точного плана действий.",
+        "brand_strategy_what_text": "Операционный аудит, финансовая реструктуризация, стратегии роста.",
+        "synergy_strategy_title": "VELES STRATEGY: МОЗГ ЭКОСИСТЕМЫ",
+        "synergy_strategy_desc": "Veles Strategy является аналитическим и стратегическим ядром всего Syndicate. Именно здесь рождаются планы расширения, оптимизации и оздоровления, которые затем реализуются другими брендами.",
+        "synergy_box_knowledge": "Знания",
+        "synergy_box_tech": "Технологии",
+        "synergy_box_execution": "Исполнение",
+        "synergy_box_strategy": "Стратегия",
         "cookie_text": "Этот сайт использует файлы cookie для улучшения пользовательского опыта. Вы можете принять все или только необходимые.",
         "cookie_accept": "Принять",
         "cookie_essential": "Только необходимые",
@@ -811,6 +1000,8 @@
         "brand_digital_desc": "SaaS, веб-сайти, маркетинг",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Будівництво, зали, промислові установки",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Стратегія зростання, оздоровлення та виконання. Ми відновлюємо компанії, які втрачають гроші.",
         "brand_more": "Детальніше",
         "philosophy_title": "Філософія Syndicate",
         "philosophy_text": "В основі Veles Syndicate лежить переконання, що справжнє домінування на ринку випливає з гармонійного поєднання знань, технологій та естетики.",
@@ -819,6 +1010,7 @@
         "academy_cta": "Вступити до Academy",
         "digital_cta": "Почати трансформацію",
         "construction_cta": "Будувати майбутнє",
+        "strategy_cta": "Виправте свій бізнес",
         "contact_title": "Контакт",
         "contact_name": "Ім’я та прізвище",
         "contact_email": "E-mail",
@@ -841,6 +1033,16 @@
         "brand_construction_vision_text": "Встановлення нових стандартів у промисловому будівництві та технологіях залів.",
         "brand_construction_why_text": "Міцний фундамент — основа кожної імперії.",
         "brand_construction_what_text": "Сталеві конструкції, промислові установки, управління будівництвом.",
+        "brand_strategy_mission_text": "Оптимізація бізнес-процесів та відновлення прибутковості підприємств у кризі.",
+        "brand_strategy_vision_text": "Встановлення стандартів операційної та стратегічної досконалості на європейському ринку.",
+        "brand_strategy_why_text": "Ми віримо, що кожна компанія заслуговує на другий шанс і точний план дій.",
+        "brand_strategy_what_text": "Операційний аудит, фінансова реструктуризація, стратегії зростання.",
+        "synergy_strategy_title": "VELES STRATEGY: МОЗОК ЕКОСИСТЕМИ",
+        "synergy_strategy_desc": "Veles Strategy є аналітичним та стратегічним ядром усього Syndicate. Саме тут народжуються плани розширення, оптимізації та оздоровлення, які потім реалізуються іншими брендами.",
+        "synergy_box_knowledge": "Знання",
+        "synergy_box_tech": "Технології",
+        "synergy_box_execution": "Виконання",
+        "synergy_box_strategy": "Стратегія",
         "cookie_text": "Цей сайт використовує файли cookie для покращення користувацького досвіду. Ви можете прийняти всі або лише необхідні.",
         "cookie_accept": "Прийняти",
         "cookie_essential": "Лише необхідні",
@@ -862,14 +1064,17 @@
         "brand_digital_desc": "SaaS、网站、营销",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "建筑、大厅、工业装置",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "增长战略、扭亏为盈与执行。我们修复亏损的公司。",
         "brand_more": "更多",
         "philosophy_title": "Syndicate 哲学",
-        "philosophy_text": "Veles Syndicate 的核心信念 is，真正的市场主导地位源于知识、技术和美学的和谐融合。",
+        "philosophy_text": "Veles Syndicate 的核心信念是，真正的市场主导地位源于知识、技术和美学的和谐融合。",
         "synergy_title": "品牌协同",
         "synergy_text": "我们的商业模式基于品牌之间的价值交换。",
         "academy_cta": "加入学院",
         "digital_cta": "开始转型",
         "construction_cta": "建设未来",
+        "strategy_cta": "修复您的业务",
         "contact_title": "联系我们",
         "contact_name": "姓名",
         "contact_email": "电子邮件",
@@ -883,7 +1088,7 @@
         "brand_academy_mission_text": "通过提供最高质量的认证项目知识，培养明天的领导者。",
         "brand_academy_vision_text": "成为商业教育和管理领域的全球标准。",
         "brand_academy_why_text": "我们相信能力是未来唯一的货币。",
-        "brand_academy_what_text": "经过认证的 PRINCE2、敏捷和战略 management 课程。",
+        "brand_academy_what_text": "经过认证的 PRINCE2、敏捷和战略管理课程。",
         "brand_digital_mission_text": "通过创新的技术解决方案加速企业的数字化演进。",
         "brand_digital_vision_text": "成为世界上最先进的数字生态系统的建筑师。",
         "brand_digital_why_text": "技术应该服务于人，而不是相反。",
@@ -892,6 +1097,16 @@
         "brand_construction_vision_text": "在工业建设和大厅技术方面建立新标准。",
         "brand_construction_why_text": "坚实的基础是每个帝国的基础。",
         "brand_construction_what_text": "钢结构、工业装置、施工管理。",
+        "brand_strategy_mission_text": "优化业务流程，为处于危机中的公司恢复盈利能力。",
+        "brand_strategy_vision_text": "在欧洲市场建立运营和战略卓越标准。",
+        "brand_strategy_why_text": "我们相信每家公司都值得第二次机会和精确的行动计划。",
+        "brand_strategy_what_text": "运营审计、财务重组、增长战略。",
+        "synergy_strategy_title": "VELES STRATEGY：生态系统大脑",
+        "synergy_strategy_desc": "Veles Strategy 是整个 Syndicate 的分析和战略核心。这里是扩张、优化和扭亏为盈计划诞生的地方，然后由其他品牌执行。",
+        "synergy_box_knowledge": "知识",
+        "synergy_box_tech": "技术",
+        "synergy_box_execution": "执行",
+        "synergy_box_strategy": "战略",
         "cookie_text": "本网站使用 cookie 来改善用户体验。您可以接受全部或仅接受必需的 cookie。",
         "cookie_accept": "接受",
         "cookie_essential": "仅限必需",
@@ -913,6 +1128,8 @@
         "brand_digital_desc": "SaaS、ウェブサイト、マーケティング",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "建設、ホール、産業設備",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "成長戦略、ターンアラウンド、実行。損失を出している企業を修復します。",
         "brand_more": "もっと見る",
         "philosophy_title": "Syndicate の哲学",
         "philosophy_text": "Veles Syndicateの核心には、真の市場支配は知識、技術、そして美学の調和のとれた融合から生まれるという信念があります。",
@@ -921,6 +1138,7 @@
         "academy_cta": "アカデミーに入会する",
         "digital_cta": "変革を開始する",
         "construction_cta": "未来を築く",
+        "strategy_cta": "ビジネスを修復する",
         "contact_title": "お問い合わせ",
         "contact_name": "氏名",
         "contact_email": "メールアドレス",
@@ -943,6 +1161,16 @@
         "brand_construction_vision_text": "産業建設とホール技術における新しい基準を設定する。",
         "brand_construction_why_text": "強固な基盤はすべての帝国の基礎です。",
         "brand_construction_what_text": "鉄骨構造、産業設備、施工管理。",
+        "brand_strategy_mission_text": "ビジネスプロセスを最適化し、危機に瀕している企業の収益性を回復させます。",
+        "brand_strategy_vision_text": "欧州市場における運用的および戦略的卓越性の基準を設定します。",
+        "brand_strategy_why_text": "すべての企業にセカンドチャンスと正確な行動計画が必要であると信じています。",
+        "brand_strategy_what_text": "業務監査、財務再編、成長戦略。",
+        "synergy_strategy_title": "VELES STRATEGY：エコシステムの頭脳",
+        "synergy_strategy_desc": "Veles Strategy は、Syndicate 全体の分析および戦略的中核を構成します。ここで拡大、最適化、およびターンアラウンドの計画が作成され、他のブランドによって実行されます。",
+        "synergy_box_knowledge": "知識",
+        "synergy_box_tech": "技術",
+        "synergy_box_execution": "実行",
+        "synergy_box_strategy": "戦略",
         "cookie_text": "このウェブサイトでは、ユーザー体験を向上させるためにクッキーを使用しています。すべてを受け入れるか、必要なものだけを受け入れることができます。",
         "cookie_accept": "同意する",
         "cookie_essential": "必須のみ",
@@ -964,6 +1192,8 @@
         "brand_digital_desc": "SaaS, 웹사이트, 마케팅",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "건설, 홀, 산업 시설",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "성장 전략, 턴어라운드 및 실행. 손실을 보는 기업을 정상화합니다.",
         "brand_more": "더 보기",
         "philosophy_title": "Syndicate 철학",
         "philosophy_text": "Veles Syndicate의 핵심에는 진정한 시장 지배력이 지식, 기술 및 미학의 조화로운 결합에서 나온다는 믿음이 있습니다.",
@@ -972,6 +1202,7 @@
         "academy_cta": "아카데미 가입",
         "digital_cta": "변혁 시작",
         "construction_cta": "미래를 건설하다",
+        "strategy_cta": "비즈니스 정상화",
         "contact_title": "연락처",
         "contact_name": "성함",
         "contact_email": "이메일",
@@ -994,6 +1225,16 @@
         "brand_construction_vision_text": "산업 건설 및 홀 기술의 새로운 표준을 제시합니다.",
         "brand_construction_why_text": "탄탄한 기초는 모든 제국의 기반입니다.",
         "brand_construction_what_text": "철골 구조, 산업 시설, 건설 관리.",
+        "brand_strategy_mission_text": "비즈니스 프로세스를 최적화하고 위기에 처한 기업의 수익성을 회복시킵니다.",
+        "brand_strategy_vision_text": "유럽 시장에서 운영 및 전략적 탁월성의 표준을 설정합니다.",
+        "brand_strategy_why_text": "우리는 모든 회사가 두 번째 기회와 정밀한 실행 계획을 가질 자격이 있다고 믿습니다.",
+        "brand_strategy_what_text": "운영 감사, 재무 구조 조정, 성장 전략.",
+        "synergy_strategy_title": "VELES STRATEGY: 에코시스템의 두뇌",
+        "synergy_strategy_desc": "Veles Strategy는 Syndicate 전체의 분석 및 전략적 핵심을 구성합니다. 여기서 확장, 최적화 및 턴어라운드 계획이 수립되고 다른 브랜드에 의해 실행됩니다.",
+        "synergy_box_knowledge": "지식",
+        "synergy_box_tech": "기술",
+        "synergy_box_execution": "실행",
+        "synergy_box_strategy": "전략",
         "cookie_text": "이 웹사이트는 사용자 경험을 개선하기 위해 쿠키를 사용합니다. 모두 수락하거나 필수 항목만 수락할 수 있습니다.",
         "cookie_accept": "수락",
         "cookie_essential": "필수만",
@@ -1015,6 +1256,8 @@
         "brand_digital_desc": "SaaS, वेबसाइटें, मार्केटिंग",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "निर्माण, हॉल, औद्योगिक प्रतिष्ठान",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "विकास रणनीति, टर्नअराउंड और निष्पादन। हम पैसा गंवाने वाली कंपनियों को ठीक करते हैं।",
         "brand_more": "अधिक",
         "philosophy_title": "Syndicate दर्शन",
         "philosophy_text": "Veles Syndicate के मूल में यह विश्वास is कि सच्चा बाजार प्रभुत्व ज्ञान, प्रौद्योगिकी और सौंदर्यशास्त्र के सामंजस्यपूर्ण मिश्रण से आता है।",
@@ -1023,6 +1266,7 @@
         "academy_cta": "अकादमी में शामिल हों",
         "digital_cta": "परिवर्तन शुरू करें",
         "construction_cta": "भविष्य का निर्माण करें",
+        "strategy_cta": "अपना व्यवसाय ठीक करें",
         "contact_title": "संपर्क",
         "contact_name": "नाम",
         "contact_email": "ई-मेल",
@@ -1036,7 +1280,7 @@
         "brand_academy_mission_text": "उच्चतम गुणवत्ता वाले प्रमाणित परियोजना ज्ञान प्रदान करके भविष्य के नेताओं को शिक्षित करना।",
         "brand_academy_vision_text": "व्यापार शिक्षा और प्रबंधन में वैश्विक मानक बनना।",
         "brand_academy_why_text": "हमारा मानना है कि योग्यता भविष्य की एकमात्र मुद्रा है।",
-        "brand_academy_what_text": "प्रमाणित PRINCE2, Agile and रणनीतिक प्रबंधन पाठ्यक्रम।",
+        "brand_academy_what_text": "प्रमाणित PRINCE2, Agile और रणनीतिक प्रबंधन पाठ्यक्रम।",
         "brand_digital_mission_text": "अभिनव तकनीकी समाधानों के माध्यम से उद्यमों के डिजिटल विकास को गति देना।",
         "brand_digital_vision_text": "दुनिया में सबसे उन्नत डिजिटल पारिस्थितिकी तंत्र का वास्तुकार बनना।",
         "brand_digital_why_text": "तकनीक को इंसान की सेवा करनी चाहिए, न कि इसके विपरीत।",
@@ -1045,6 +1289,16 @@
         "brand_construction_vision_text": "औद्योगिक निर्माण और हॉल प्रौद्योगिकी में नए मानक स्थापित करना।",
         "brand_construction_why_text": "ठोस नींव हर साम्राज्य का आधार होती है।",
         "brand_construction_what_text": "स्टील संरचनाएं, औद्योगिक प्रतिष्ठان, निर्माण प्रबंधन।",
+        "brand_strategy_mission_text": "व्यावसायिक प्रक्रियाओं को अनुकूलित करना और संकट में घिरी कंपनियों की लाभप्रदता को बहाल करना।",
+        "brand_strategy_vision_text": "यूरोपीय बाजार में परिचालन और रणनीतिक उत्कृष्टता के मानक स्थापित करना।",
+        "brand_strategy_why_text": "हमारा मानना है कि हर कंपनी दूसरे मौके और एक सटीक कार्य योजना की हकदार है।",
+        "brand_strategy_what_text": "परिचालन ऑडिट, वित्तीय पुनर्गठन, विकास रणनीतियां।",
+        "synergy_strategy_title": "VELES STRATEGY: पारिस्थितिकी तंत्र का मस्तिष्क",
+        "synergy_strategy_desc": "Veles Strategy पूरे Syndicate का विश्लेषणात्मक और रणनीतिक मूल है। यहीं पर विस्तार, अनुकूलन और टर्नअराउंड योजनाओं का जन्म होता है, जिन्हें अन्य ब्रांडों द्वारा निष्पादित किया जाता है।",
+        "synergy_box_knowledge": "ज्ञान",
+        "synergy_box_tech": "तकनीकी",
+        "synergy_box_execution": "निष्पादन",
+        "synergy_box_strategy": "रणनीति",
         "cookie_text": "यह वेबसाइट उपयोगकर्ता अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग करती है। आप सभी या केवल आवश्यक को स्वीकार कर सकते हैं।",
         "cookie_accept": "स्वीकार करें",
         "cookie_essential": "केवल आवश्यक",
@@ -1066,6 +1320,8 @@
         "brand_digital_desc": "SaaS، المواقع الإلكترونية، التسويق",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "البناء والقاعات والمنشآت الصناعية",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "استراتيجية النمو، التحول والتنفيذ. نحن نصلح الشركات التي تخسر المال.",
         "brand_more": "المزيد",
         "philosophy_title": "فلسفة Syndicate",
         "philosophy_text": "تقوم Veles Syndicate على الاعتقاد بأن الهيمنة الحقيقية على السوق تأتي من مزيج متناغم من المعرفة والتكنولوجيا والجماليات.",
@@ -1074,6 +1330,7 @@
         "academy_cta": "انضم إلى الأكاديمية",
         "digital_cta": "ابدأ التحول",
         "construction_cta": "ابنِ المستقبل",
+        "strategy_cta": "أصلح عملك",
         "contact_title": "اتصل بنا",
         "contact_name": "الاسم الكامل",
         "contact_email": "البريد الإلكتروني",
@@ -1085,17 +1342,27 @@
         "brand_why": "لماذا؟",
         "brand_what": "ماذا؟",
         "brand_academy_mission_text": "تعليم قادة الغد من خلال توفير أعلى جودة من المعرفة المعتمدة بالمشاريع.",
-        "brand_academy_vision_text": "أن نصبح المعيار العالمي in تعليم وإدارة الأعمال.",
+        "brand_academy_vision_text": "أن نصبح المعيار العالمي في تعليم وإدارة الأعمال.",
         "brand_academy_why_text": "نحن نؤمن بأن الكفاءة هي العملة الوحيدة للمستقبل.",
-        "brand_academy_what_text": "دورات معتمدة in PRINCE2 وAgile والإدارة الاستراتيجية.",
+        "brand_academy_what_text": "دورات معتمدة في PRINCE2 وAgile والإدارة الاستراتيجية.",
         "brand_digital_mission_text": "تسريع التطور الرقمي للمؤسسات من خلال حلول تكنولوجية مبتكرة.",
-        "brand_digital_vision_text": "أن نكون مهندس النظم البيئية الرقمية الأكثر تقدماً in العالم.",
+        "brand_digital_vision_text": "أن نكون مهندس النظم البيئية الرقمية الأكثر تقدماً في العالم.",
         "brand_digital_why_text": "يجب أن تخدم التكنولوجيا الإنسان، وليس العكس.",
         "brand_digital_what_text": "SaaS، البرمجيات المخصصة، أتمتة التسويق، تكامل الذكاء الاصطناعي.",
         "brand_construction_mission_text": "بناء بنية تحتية دائمة لصناعة المستقبل مع الاهتمام بكل التفاصيل.",
-        "brand_construction_vision_text": "وضع معايير جديدة in البناء الصناعي وتكنولوجيا القاعات.",
+        "brand_construction_vision_text": "وضع معايير جديدة في البناء الصناعي وتكنولوجيا القاعات.",
         "brand_construction_why_text": "الأساسات القوية هي أساس كل إمبراطورية.",
         "brand_construction_what_text": "الهياكل الفولاذية، التركيبات الصناعية، إدارة البناء.",
+        "brand_strategy_mission_text": "تحسين العمليات التجارية واستعادة الربحية للشركات في الأزمات.",
+        "brand_strategy_vision_text": "وضع معايير التميز التشغيلي والاستراتيجي في السوق الأوروبية.",
+        "brand_strategy_why_text": "نحن نؤمن بأن كل شركة تستحق فرصة ثانية وخطة عمل دقيقة.",
+        "brand_strategy_what_text": "التدقيق التشغيلي، إعادة الهيكلة المالية، استراتيجيات النمو.",
+        "synergy_strategy_title": "VELES STRATEGY: عقل المنظومة",
+        "synergy_strategy_desc": "تشكل Veles Strategy النواة التحليلية والاستراتيجية لـ Syndicate بأكمله. هنا تولد خطط التوسع والتحسين والتحول، والتي يتم تنفيذها بعد ذلك من قبل العلامات التجارية الأخرى.",
+        "synergy_box_knowledge": "المعرفة",
+        "synergy_box_tech": "التكنولوجيا",
+        "synergy_box_execution": "التنفيذ",
+        "synergy_box_strategy": "الاستراتيجية",
         "cookie_text": "يستخدم هذا الموقع ملفات تعريف الارتباط لتحسين تجربة المستخدم. يمكنك قبول الكل أو الضروري فقط.",
         "cookie_accept": "قبول",
         "cookie_essential": "الضروري فقط",
@@ -1117,14 +1384,17 @@
         "brand_digital_desc": "SaaS، وب‌سایت‌ها، بازاریابی",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "ساخت‌وساز، سالن‌ها، تأسیسات صنعتی",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "استراتژی رشد، بازسازی و اجرا. ما شرکت‌هایی را که ضرر می‌دهند اصلاح می‌کنیم.",
         "brand_more": "بیشتر",
         "philosophy_title": "فلسفه Syndicate",
-        "philosophy_text": "در قلب Veles Syndicate این باور نهفته است که تسلط واقعی بر بازار از ترکیب هماهنگ دانش، فناوری и زیبایی‌شناسی حاصل می‌شود.",
+        "philosophy_text": "در قلب Veles Syndicate این باور نهفته است که تسلط واقعی بر بازار از ترکیب هماهنگ دانش، فناوری و زیبایی‌شناسی حاصل می‌شود.",
         "synergy_title": "هم‌افزایی برندها",
         "synergy_text": "مدل کسب‌وکار ما بر پایه تبادل ارزش بین برندها استوار است.",
         "academy_cta": "به آکادمی بپیوندید",
         "digital_cta": "تحول را شروع کنید",
         "construction_cta": "آینده را بسازید",
+        "strategy_cta": "کسب و کار خود را اصلاح کنید",
         "contact_title": "تماس با ما",
         "contact_name": "نام کامل",
         "contact_email": "ایمیل",
@@ -1138,20 +1408,158 @@
         "brand_academy_mission_text": "آموزش رهبران فردا با ارائه با کیفیت‌ترین دانش گواهی شده پروژه.",
         "brand_academy_vision_text": "تبدیل شدن به استاندارد جهانی در آموزش و مدیریت کسب و کار.",
         "brand_academy_why_text": "ما بر این باوریم که شایستگی تنها ارز آینده است.",
-        "brand_academy_what_text": "دوره های آموزشی معتبر PRINCE2، Agile and مدیریت استراتژیک.",
+        "brand_academy_what_text": "دوره های آموزشی معتبر PRINCE2، Agile و مدیریت استراتژیک.",
         "brand_digital_mission_text": "شتاب بخشیدن به تکامل دیجیتال شرکت ها از طریق راه حل های فناورانه نوآورانه.",
         "brand_digital_vision_text": "بودن معمار پیشرفته ترین اکوسیستم های دیجیتال در جهان.",
-        "brand_digital_why_text": "فناوری باید in خدمت انسان باشد، نه برعکس.",
+        "brand_digital_why_text": "فناوری باید در خدمت انسان باشد، نه برعکس.",
         "brand_digital_what_text": "SaaS، نرم افزار سفارشی، اتوماسیون بازاریابی، یکپارچه سازی هوش مصنوعی.",
         "brand_construction_mission_text": "ایجاد زیرساخت های پایدار برای صنعت آینده با توجه به تمام جزئیات.",
-        "brand_construction_vision_text": "تعیین استانداردهای جدید in ساخت و ساز صنعتی and فناوری سالن ها.",
+        "brand_construction_vision_text": "تعیین استانداردهای جدید در ساخت و ساز صنعتی و فناوری سالن ها.",
         "brand_construction_why_text": "پایه های محکم اساس هر امپراتوری است.",
         "brand_construction_what_text": "سازه های فولادی، تاسیسات صنعتی، مدیریت ساخت و ساز.",
+        "brand_strategy_mission_text": "بهینه سازی فرآیندهای کسب و کار و بازگرداندن سودآوری به شرکت های در بحران.",
+        "brand_strategy_vision_text": "تعیین استانداردهای برتری عملیاتی و استراتژیک در بازار اروپا.",
+        "brand_strategy_why_text": "ما معتقدیم که هر شرکتی شایسته فرصت دوباره و یک برنامه عمل دقیق است.",
+        "brand_strategy_what_text": "ممیزی عملیاتی، تجدید ساختار مالی، استراتژی های رشد.",
+        "synergy_strategy_title": "VELES STRATEGY: مغز اکوسیستم",
+        "synergy_strategy_desc": "Veles Strategy هسته تحلیلی و استراتژیک کل Syndicate را تشکیل می دهد. اینجاست که طرح های گسترش، بهینه سازی و بازسازی متولد می شوند که سپس توسط برندهای دیگر اجرا می شوند.",
+        "synergy_box_knowledge": "دانش",
+        "synergy_box_tech": "فناوری",
+        "synergy_box_execution": "اجرا",
+        "synergy_box_strategy": "استراتژی",
         "cookie_text": "این وب‌سایت برای بهبود تجربه کاربری از کوکی‌ها استفاده می‌کند. می‌توانید همه یا فقط موارد ضروری را بپذیرید.",
         "cookie_accept": "پذیرفتن",
         "cookie_essential": "فقط ضروری",
         "cookie_privacy": "سیاست حفظ حریم خصوصی",
         "privacy_title": "سیاست حفظ حریم خصوصی"
+    },
+    "cs": {
+        "nav_home": "Domů",
+        "nav_brands": "Značky",
+        "nav_philosophy": "Filosofie",
+        "nav_synergy": "Synergie",
+        "nav_contact": "Kontakt",
+        "hero_title": "Budujeme impéria.",
+        "hero_subtitle": "Znalosti. Nástroje. Realizace. Dominance.",
+        "brands_title": "Naše značky",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo pro profesionály — certifikace PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, webové stránky, marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Stavebnictví, haly, průmyslové instalace",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Strategie růstu, turnaround a realizace. Opravujeme firmy, které ztrácejí peníze.",
+        "brand_more": "Více",
+        "philosophy_title": "Filosofie Syndicate",
+        "philosophy_text": "Základem Veles Syndicate je přesvědčení, že skutečná tržní dominance vyplývá z harmonického spojení znalostí, technologií a estetiky.",
+        "synergy_title": "Synergie značek",
+        "synergy_text": "Náš obchodní model je založen na výměně hodnot mezi značkami.",
+        "academy_cta": "Vstupte do Academy",
+        "digital_cta": "Zahajte transformaci",
+        "construction_cta": "Budujte budoucnost",
+        "strategy_cta": "Opravte svůj byznys",
+        "contact_title": "Kontakt",
+        "contact_name": "Jméno a příjmení",
+        "contact_email": "E-mail",
+        "contact_msg": "Zpráva",
+        "contact_send": "Odeslat zprávu",
+        "footer_rights": "© 2026 Veles Syndicate Sp. z o.o. Všechna práva vyhrazena.",
+        "brand_mission": "Mise",
+        "brand_vision": "Vize",
+        "brand_why": "PROČ?",
+        "brand_what": "CO?",
+        "brand_academy_mission_text": "Vzdělávání lídrů zítřka poskytováním nejkvalitnějších certifikovaných znalostí o projektech.",
+        "brand_academy_vision_text": "Stát se globálním standardem v obchodním vzdělávání a managementu.",
+        "brand_academy_why_text": "Věříme, že kompetence jsou jedinou měnou budoucnosti.",
+        "brand_academy_what_text": "Certifikované kurzy PRINCE2, Agile a strategického řízení.",
+        "brand_digital_mission_text": "Urychlení digitální evoluce podniků prostřednictvím inovativních technologických řešení.",
+        "brand_digital_vision_text": "Být architektem nejpokročilejších digitálních ekosystémů na světě.",
+        "brand_digital_why_text": "Technologie by měla sloužit člověku, nikoli naopak.",
+        "brand_digital_what_text": "SaaS, Custom Software, Marketing Automation, AI Integration.",
+        "brand_construction_mission_text": "Budování trvalé infrastruktury pro průmysl budoucnosti s důrazem na každý detail.",
+        "brand_construction_vision_text": "Stanovení nových standardů v průmyslovém stavitelství a technologii hal.",
+        "brand_construction_why_text": "Solidní základy jsou základem každého impéria.",
+        "brand_construction_what_text": "Ocelové konstrukce, průmyslové instalace, řízení staveb.",
+        "brand_strategy_mission_text": "Optimalizace obchodních procesů a obnovení ziskovosti podniků v krizi.",
+        "brand_strategy_vision_text": "Stanovení standardů operativní a strategické excelence na evropském trhu.",
+        "brand_strategy_why_text": "Věříme, že každá firma si zaslouží druhou šanci a přesný akční plán.",
+        "brand_strategy_what_text": "Operativní audit, finanční restrukturalizace, strategie růstu.",
+        "synergy_strategy_title": "VELES STRATEGY: MOZEK EKOSYSTÉMU",
+        "synergy_strategy_desc": "Veles Strategy tvoří analytické a strategické jádro celého Syndicate. Zde vznikají plány expanze, optimalizace a turnaroundu, které následně realizují ostatní značky.",
+        "synergy_box_knowledge": "Znalosti",
+        "synergy_box_tech": "Technologie",
+        "synergy_box_execution": "Realizace",
+        "synergy_box_strategy": "Strategie",
+        "cookie_text": "Tato stránka používá soubory cookies za účelem zlepšení uživatelského zážitku. Můžete přijmout všechny nebo pouze nezbytné.",
+        "cookie_accept": "Přijímám",
+        "cookie_essential": "Pouze nezbytné",
+        "cookie_privacy": "Zásady ochrany osobních údajů",
+        "privacy_title": "Zásady ochrany osobních údajů"
+    },
+    "hu": {
+        "nav_home": "Kezdőlap",
+        "nav_brands": "Márkák",
+        "nav_philosophy": "Filozófia",
+        "nav_synergy": "Szinergia",
+        "nav_contact": "Kapcsolat",
+        "hero_title": "Birodalmakat építünk.",
+        "hero_subtitle": "Tudás. Eszközök. Végrehajtás. Dominancia.",
+        "brands_title": "Márkáink",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo profiknak — PRINCE2 minősítések",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, weboldalak, marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Építőipar, csarnokok, ipari létesítmények",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Növekedési stratégia, turnaround és végrehajtás. Megjavítjuk a pénzt vesztő cégeket.",
+        "brand_more": "Tovább",
+        "philosophy_title": "Syndicate Filozófia",
+        "philosophy_text": "A Veles Syndicate alapja az a meggyőződés, hogy a valódi piaci dominancia a tudás, a technológia és az esztétika harmonikus ötvözetéből fakad.",
+        "synergy_title": "Márka szinergia",
+        "synergy_text": "Üzleti modellünk a márkák közötti értékcserén alapul.",
+        "academy_cta": "Csatlakozzon az Academy-hez",
+        "digital_cta": "Kezdje el az átalakítást",
+        "construction_cta": "Építse a jövőt",
+        "strategy_cta": "Javítsa meg vállalkozását",
+        "contact_title": "Kapcsolat",
+        "contact_name": "Név",
+        "contact_email": "E-mail",
+        "contact_msg": "Üzenet",
+        "contact_send": "Üzenet küldése",
+        "footer_rights": "© 2026 Veles Syndicate Sp. z o.o. Minden jog fenntartva.",
+        "brand_mission": "Küldetés",
+        "brand_vision": "Jövőkép",
+        "brand_why": "MIÉRT?",
+        "brand_what": "MIT?",
+        "brand_academy_mission_text": "A jövő vezetőinek képzése a legmagasabb minőségű minősített projektmenedzsment tudás biztosításával.",
+        "brand_academy_vision_text": "Globális standarddá válni az üzleti oktatásban és menedzsmentben.",
+        "brand_academy_why_text": "Hisszük, hogy a kompetencia a jövő egyetlen valutája.",
+        "brand_academy_what_text": "Minősített PRINCE2, Agile és stratégiai menedzsment képzések.",
+        "brand_digital_mission_text": "A vállalatok digitális evolúciójának felgyorsítása innovatív technológiai megoldásokkal.",
+        "brand_digital_vision_text": "A világ legfejlettebb digitális ökoszisztémáinak építészévé válni.",
+        "brand_digital_why_text": "A technológiának az embert kell szolgálnia, nem fordítva.",
+        "brand_digital_what_text": "SaaS, egyedi szoftverek, marketing automatizálás, AI integráció.",
+        "brand_construction_mission_text": "Tartós infrastruktúra építése a jövő ipara számára, minden részletre kiterjedő figyelemmel.",
+        "brand_construction_vision_text": "Új standardok felállítása az ipari építészetben és csarnoktechnológiában.",
+        "brand_construction_why_text": "A szilárd alapok minden birodalom alapkövei.",
+        "brand_construction_what_text": "Acélszerkezetek, ipari létesítmények, építésvezetés.",
+        "brand_strategy_mission_text": "Üzleti folyamatok optimalizálása és a válságban lévő cégek jövedelmezőségének helyreállítása.",
+        "brand_strategy_vision_text": "Az operatív és stratégiai kiválóság standardjainak felállítása az európai piacon.",
+        "brand_strategy_why_text": "Hisszük, hogy minden cég megérdemel egy második esélyt és egy pontos cselekvési tervet.",
+        "brand_strategy_what_text": "Operatív audit, pénzügyi szerkezetátalakítás, növekedési stratégiák.",
+        "synergy_strategy_title": "VELES STRATEGY: AZ ÖKOSZISZTÉMA AGYA",
+        "synergy_strategy_desc": "A Veles Strategy alkotja a teljes Syndicate elemzői és stratégiai magját. Itt születnek a terjeszkedési, optimalizálási és turnaround tervek, amelyeket aztán a többi márka hajt végre.",
+        "synergy_box_knowledge": "Tudás",
+        "synergy_box_tech": "Technológia",
+        "synergy_box_execution": "Végrehajtás",
+        "synergy_box_strategy": "Stratégia",
+        "cookie_text": "Ez a weboldal sütiket használ a felhasználói élmény javítása érdekében. Elfogadhatja az összeset vagy csak a szükségeseket.",
+        "cookie_accept": "Elfogadom",
+        "cookie_essential": "Csak szükséges",
+        "cookie_privacy": "Adatvédelmi nyilatkozat",
+        "privacy_title": "Adatvédelmi Nyilatkozat"
     }
 };
 
@@ -1220,11 +1628,37 @@
             
             initHeroCanvas();
             init3DTilt();
+            initScrollAnimations();
         });
 
         function acceptCookies() {
             localStorage.setItem('cookies_accepted', 'true');
             document.getElementById('cookie-banner').classList.remove('visible');
+        }
+
+        /**
+         * Scroll Animations using Intersection Observer
+         */
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Targets
+            document.querySelectorAll('section h2, .card-3d-wrap, .asymmetric-layout > div').forEach(el => {
+                el.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-1000', 'ease-out');
+                observer.observe(el);
+            });
         }
 
         /**
