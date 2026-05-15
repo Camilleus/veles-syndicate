@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veles Syndicate | Budujemy Imperia</title>
+    <link rel="icon" type="image/png" href="data:image/png;base64,">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Zmienne CSS definiujące paletę barw i parametry wizualne */
+        :root {
+            --gold: #D4AF37;
+            --gold-alt: #C7AE6A;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --green: #44C060;
+            --blue: #0170F5;
+            --red: #FF3131;
+            
+            /* Domyślny Dark Mode */
+            --bg-main: #0A0A0A;
+            --bg-card: #111111;
+            --text-main: #F5F5F5;
+            --text-dim: #A0A0A0;
+            --header-bg: rgba(10, 10, 10, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --input-bg: #111111;
+            
+            --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            --bg-main: #F5F5F5;
+            --bg-card: #FFFFFF;
+            --text-main: #111111;
+            --text-dim: #444444;
+            --header-bg: rgba(245, 245, 245, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --input-bg: #EEEEEE;
+            --gold: #8E6E2E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        h1 { font-size: clamp(3rem, 10vw, 7rem); }
+        h2 { font-size: clamp(2rem, 6vw, 4rem); margin-bottom: 2rem; }
+
+        .rtl { font-family: 'Inter', sans-serif; }
+        .rtl h1, .rtl h2, .rtl h3, .rtl .logo, .rtl .content-text, .rtl .section-header { text-align: right; }
+
+        /* SPA Layout */
+        main section {
+            display: none;
+            min-height: 100vh;
+            padding: 120px 5%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition-smooth);
+        }
+
+        main section.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Specific */
+        #hero { position: relative; text-align: center; overflow: hidden; }
+        #hero-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .hero-content { position: relative; z-index: 1; }
+        #hero h1 {
+            margin-bottom: 30px;
+            background: linear-gradient(180deg, var(--text-main) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-logo-img {
+            width: 250px;
+            height: auto;
+            filter: drop-shadow(0 0 30px var(--gold-glow));
+            animation: floating3d 6s ease-in-out infinite;
+        }
+
+        @keyframes floating3d {
+            0%, 100% { transform: translateY(0) rotateY(0) rotateX(10deg); }
+            50% { transform: translateY(-20px) rotateY(15deg) rotateX(-10deg); }
+        }
+
+        /* Brands 3D Cards */
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 50px;
+            perspective: 1500px;
+        }
+
+        .card-3d-wrap { height: 500px; cursor: pointer; }
+        .card-3d {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-shine {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 30px;
+            pointer-events: none;
+            z-index: 10;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+
+        .card-content { padding: 50px; text-align: center; transform: translateZ(80px); }
+        .brand-logo-img { width: 120px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+        .card-title { font-size: 1.8rem; margin-bottom: 10px; }
+        .card-desc { font-size: 1rem; color: var(--text-dim); }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: var(--header-bg);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--gold); text-decoration: none; }
+        .nav-desktop { display: flex; list-style: none; gap: 30px; }
+        .nav-desktop li a { color: var(--text-dim); text-decoration: none; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; }
+        .nav-desktop li a:hover { color: var(--gold); }
+
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .lang-select { background: transparent; border: 1px solid var(--border-color); color: var(--text-light); padding: 5px; border-radius: 4px; color: var(--text-dim); }
+
+        .btn-3d {
+            position: relative;
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+        .btn-3d:hover { background: var(--gold); color: var(--bg-main); }
+
+        /* Sections content */
+        .asymmetric-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+            width: 100%;
+        }
+        @media (max-width: 900px) { .asymmetric-layout { grid-template-columns: 1fr; } }
+
+        .brand-detail { width: 100%; max-width: 1200px; }
+        .content-text { color: var(--text-dim); line-height: 1.8; }
+
+        /* Cookie Banner */
+        #cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--gold);
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 9999;
+            gap: 20px;
+        }
+        #cookie-banner.visible { display: flex; }
+        @media (max-width: 768px) { #cookie-banner { flex-direction: column; text-align: center; } }
+
+        .contact-form { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 600px; }
+        .contact-form input, .contact-form textarea {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            color: var(--text-main);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#/hero" class="logo">VELES SYNDICATE</a>
+        <nav>
+            <ul class="nav-desktop">
+                <li><a onclick="navigateTo('hero')" data-i18n="nav_home">Start</a></li>
+                <li><a onclick="navigateTo('brands')" data-i18n="nav_brands">Marki</a></li>
+                <li><a onclick="navigateTo('philosophy')" data-i18n="nav_philosophy">Filozofia</a></li>
+                <li><a onclick="navigateTo('synergy')" data-i18n="nav_synergy">Synergia</a></li>
+                <li><a onclick="navigateTo('contact')" data-i18n="nav_contact">Kontakt</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <select class="lang-select" onchange="setLanguage(this.value)">
+                <option value="pl">PL</option>
+                <option value="en">EN</option>
+                <option value="de">DE</option>
+                <option value="fr">FR</option>
+                <option value="es">ES</option>
+                <option value="ru">RU</option>
+                <option value="ua">UA</option>
+                <option value="zh">ZH</option>
+                <option value="ja">JA</option>
+                <option value="ko">KO</option>
+                <option value="hi">HI</option>
+                <option value="ar">AR</option>
+                <option value="fa">FA</option>
+                <option value="cs">CS</option>
+                <option value="hu">HU</option>
+            </select>
+        </div>
+    </header>
+
+    <main id="spa-root">
+        <section id="hero" class="active">
+            <canvas id="hero-canvas"></canvas>
+            <div class="hero-content">
+                <div style="margin-bottom: 40px; display: flex; justify-content: center;">
+                    <img src="data:image/png;base64," class="hero-logo-img" alt="Veles Syndicate">
+                </div>
+                <h1 data-i18n="hero_title">Budujemy imperia.</h1>
+                <p data-i18n="hero_subtitle">Wiedza. Narzędzia. Wykonanie. Dominacja.</p>
+                <div class="hero-cta">
+                    <button onclick="navigateTo('brands')" class="btn-3d" data-i18n="nav_brands">Marki</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="brands">
+            <h2 data-i18n="brands_title">Nasze Marki</h2>
+            <div class="brands-grid">
+                <div class="card-3d-wrap" data-color="var(--green)" onclick="navigateTo('brand-academy')">
+                    <div class="card-3d">
+                        <div class="card-shine"></div>
+                        <div class="card-content">
+                            <img src="data:image/png;base64," class="brand-logo-img" alt="Academy">
+                            <h3 class="card-title">VELES ACADEMY</h3>
+                            <p class="card-desc" data-i18n="brand_academy_desc">Edukacja elit finansowych.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-3d-wrap" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
+                    <div class="card-3d">
+                        <div class="card-shine"></div>
+                        <div class="card-content">
+                            <img src="data:image/png;base64," class="brand-logo-img" alt="Digital">
+                            <h3 class="card-title">VELES DIGITAL</h3>
+                            <p class="card-desc" data-i18n="brand_digital_desc">Technologia i SaaS.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-3d-wrap" data-color="var(--red)" onclick="navigateTo('brand-construction')">
+                    <div class="card-3d">
+                        <div class="card-shine"></div>
+                        <div class="card-content">
+                            <img src="data:image/png;base64," class="brand-logo-img" alt="Construction">
+                            <h3 class="card-title">VELES CONSTRUCTION</h3>
+                            <p class="card-desc" data-i18n="brand_construction_desc">Budownictwo przemysłowe.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="brand-academy">
+            <div class="brand-detail">
+                <h2 data-i18n="brand_academy_title">VELES ACADEMY</h2>
+                <div class="asymmetric-layout">
+                    <div>
+                        <h3 data-i18n="brand_mission" style="color: var(--green); margin-bottom: 10px;">Misja</h3>
+                        <p class="content-text" data-i18n="brand_academy_mission_text">Kształcenie liderów.</p>
+                        <h3 data-i18n="brand_vision" style="color: var(--green); margin: 20px 0 10px;">Wizja</h3>
+                        <p class="content-text" data-i18n="brand_academy_vision_text">Standard globalny.</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border-left: 3px solid var(--green);">
+                        <h4 data-i18n="brand_why" style="color: var(--gold); margin-bottom: 10px;">WHY?</h4>
+                        <p data-i18n="brand_academy_why_text">Kompetencje to waluta.</p>
+                        <h4 data-i18n="brand_what" style="color: var(--gold); margin-top: 20px; margin-bottom: 10px;">WHAT?</h4>
+                        <p data-i18n="brand_academy_what_text">PRINCE2 & Agile.</p>
+                    </div>
+                </div>
+                <a href="https://velesacademy.app" target="_blank" class="btn-3d" style="margin-top: 50px;" data-i18n="academy_cta">Odwiedź velesacademy.app</a>
+            </div>
+        </section>
+
+        <section id="brand-digital">
+            <div class="brand-detail">
+                <h2 data-i18n="brand_digital_title">VELES DIGITAL</h2>
+                <div class="asymmetric-layout">
+                    <div>
+                        <h3 data-i18n="brand_mission" style="color: var(--blue); margin-bottom: 10px;">Misja</h3>
+                        <p class="content-text" data-i18n="brand_digital_mission_text">Ewolucja cyfrowa.</p>
+                        <h3 data-i18n="brand_vision" style="color: var(--blue); margin: 20px 0 10px;">Wizja</h3>
+                        <p class="content-text" data-i18n="brand_digital_vision_text">Architekt ekosystemów.</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border-left: 3px solid var(--blue);">
+                        <h4 data-i18n="brand_why" style="color: var(--gold); margin-bottom: 10px;">WHY?</h4>
+                        <p data-i18n="brand_digital_why_text">Technologia dla ludzi.</p>
+                        <h4 data-i18n="brand_what" style="color: var(--gold); margin-top: 20px; margin-bottom: 10px;">WHAT?</h4>
+                        <p data-i18n="brand_digital_what_text">SaaS & Software.</p>
+                    </div>
+                </div>
+                <a href="https://velesdigital.pl" target="_blank" class="btn-3d" style="margin-top: 50px;" data-i18n="digital_cta">Odwiedź velesdigital.pl</a>
+            </div>
+        </section>
+
+        <section id="brand-construction">
+            <div class="brand-detail">
+                <h2 data-i18n="brand_construction_title">VELES CONSTRUCTION</h2>
+                <div class="asymmetric-layout">
+                    <div>
+                        <h3 data-i18n="brand_mission" style="color: var(--red); margin-bottom: 10px;">Misja</h3>
+                        <p class="content-text" data-i18n="brand_construction_mission_text">Trwała infrastruktura.</p>
+                        <h3 data-i18n="brand_vision" style="color: var(--red); margin: 20px 0 10px;">Wizja</h3>
+                        <p class="content-text" data-i18n="brand_construction_vision_text">Nowe standardy hal.</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border-left: 3px solid var(--red);">
+                        <h4 data-i18n="brand_why" style="color: var(--gold); margin-bottom: 10px;">WHY?</h4>
+                        <p data-i18n="brand_construction_why_text">Solidne fundamenty.</p>
+                        <h4 data-i18n="brand_what" style="color: var(--gold); margin-top: 20px; margin-bottom: 10px;">WHAT?</h4>
+                        <p data-i18n="brand_construction_what_text">Konstrukcje stalowe.</p>
+                    </div>
+                </div>
+                <a href="https://velesconstruction.pl" target="_blank" class="btn-3d" style="margin-top: 50px;" data-i18n="construction_cta">Odwiedź velesconstruction.pl</a>
+            </div>
+        </section>
+
+        <section id="philosophy">
+            <h2 data-i18n="philosophy_title">Filozofia Syndicate</h2>
+            <p class="content-text" data-i18n="philosophy_text" style="text-align: center;">U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.</p>
+        </section>
+
+        <section id="synergy">
+            <h2 data-i18n="synergy_title">Synergia marek</h2>
+            <p class="content-text" data-i18n="synergy_text" style="text-align: center;">Nasz model biznesowy opiera się na wymianie wartości między markami.</p>
+        </section>
+
+        <section id="privacy">
+            <h2 data-i18n="privacy_title">Polityka Prywatności</h2>
+            <div class="content-text" style="text-align: left; max-width: 800px; margin: 0 auto;">
+                <p>Administratorem danych osobowych jest Veles Syndicate Sp. z o.o. Gromadzimy dane wyłącznie w celu obsługi zapytań z formularza kontaktowego oraz zapewnienia poprawnego działania serwisu za pomocą plików cookies.</p>
+                <p style="margin-top: 20px;">Użytkownik ma prawo do wglądu, poprawy oraz usunięcia swoich danych. Kontakt: kontakt@velesdigital.pl</p>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 data-i18n="contact_title">Kontakt</h2>
+            <form class="contact-form" onsubmit="event.preventDefault(); alert('Message sent!');">
+                <input type="text" data-i18n-placeholder="contact_name" placeholder="Imię" required>
+                <input type="email" data-i18n-placeholder="contact_email" placeholder="E-mail" required>
+                <textarea data-i18n-placeholder="contact_msg" placeholder="Wiadomość" rows="5" required></textarea>
+                <button type="submit" class="btn-3d" data-i18n="contact_send">Wyślij</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div style="text-align: center; padding: 40px;">
+            <p data-i18n="footer_rights">© 2024 Veles Syndicate Sp. z o.o.</p>
+            <a href="#/privacy" style="color: var(--text-dim); font-size: 0.8rem; text-decoration: underline;" data-i18n="cookie_privacy">Polityka prywatności</a>
+        </div>
+    </footer>
+
+    <div id="cookie-banner">
+        <p data-i18n="cookie_text">Strona używa ciasteczek.</p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="acceptCookies()" class="btn-3d" style="padding: 10px 20px; font-size: 0.7rem;" data-i18n="cookie_accept">Zgoda</button>
+            <button onclick="acceptCookies()" class="btn-3d" style="padding: 10px 20px; font-size: 0.7rem; border-color: #555; color: #999;" data-i18n="cookie_essential">Niezbędne</button>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+    "pl": {
+        "nav_home": "Start",
+        "nav_brands": "Marki",
+        "nav_philosophy": "Filozofia",
+        "nav_synergy": "Synergia",
+        "nav_contact": "Kontakt",
+        "hero_title": "Budujemy imperia.",
+        "hero_subtitle": "Wiedza. Narzędzia. Wykonanie. Dominacja.",
+        "brands_title": "Nasze Marki",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo dla profesjonalistów — certyfikacje PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, Websites, Marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Budownictwo, hale, instalacje przemysłowe",
+        "brand_more": "Więcej",
+        "philosophy_title": "Filozofia Syndicate",
+        "philosophy_text": "U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.",
+        "synergy_title": "Synergia marek",
+        "synergy_text": "Nasz model biznesowy opiera się na wymianie wartości między markami.",
+        "academy_cta": "Wstąp do Academy",
+        "digital_cta": "Rozpocznij transformację",
+        "construction_cta": "Zbuduj przyszłość",
+        "contact_title": "Kontakt",
+        "contact_name": "Imię i nazwisko",
+        "contact_email": "E-mail",
+        "contact_msg": "Wiadomość",
+        "contact_send": "Wyślij wiadomość",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. Wszelkie prawa zastrzeżone.",
+        "brand_mission": "Misja",
+        "brand_vision": "Wizja",
+        "brand_why": "WHY?",
+        "brand_what": "WHAT?",
+        "brand_academy_mission_text": "Kształcenie liderów jutra poprzez dostarczanie najwyższej jakości certyfikowanej wiedzy projektowej.",
+        "brand_academy_vision_text": "Stanie się globalnym standardem w edukacji biznesowej i zarządzaniu.",
+        "brand_academy_why_text": "Wierzymy, że kompetencje to jedyna waluta przyszłości.",
+        "brand_academy_what_text": "Certyfikowane kursy PRINCE2, Agile i zarządzania strategicznego.",
+        "brand_digital_mission_text": "Przyspieszanie cyfrowej ewolucji przedsiębiorstw poprzez innowacyjne rozwiązania technologiczne.",
+        "brand_digital_vision_text": "Bycie architektem najbardziej zaawansowanych ekosystemów cyfrowych na świecie.",
+        "brand_digital_why_text": "Technologia powinna służyć człowiekowi, nie odwrotnie.",
+        "brand_digital_what_text": "SaaS, Custom Software, Marketing Automation, AI Integration.",
+        "brand_construction_mission_text": "Budowanie trwałej infrastruktury dla przemysłu przyszłości z dbałością o każdy detal.",
+        "brand_construction_vision_text": "Wyznaczanie nowych standardów w budownictwie przemysłowym i technologii hal.",
+        "brand_construction_why_text": "Solidne fundamenty są podstawą każdego imperium.",
+        "brand_construction_what_text": "Konstrukcje stalowe, instalacje przemysłowe, zarządzanie budową.",
+        "cookie_text": "Ta strona używa plików cookies w celu poprawy doświadczenia użytkownika. Możesz zaakceptować wszystkie lub tylko niezbędne.",
+        "cookie_accept": "Akceptuję",
+        "cookie_essential": "Tylko niezbędne",
+        "cookie_privacy": "Polityka prywatności",
+        "privacy_title": "Polityka Prywatności"
+    },
+    "en": {
+        "nav_home": "Home",
+        "nav_brands": "Brands",
+        "nav_philosophy": "Philosophy",
+        "nav_synergy": "Synergy",
+        "nav_contact": "Contact",
+        "hero_title": "We build empires.",
+        "hero_subtitle": "Knowledge. Tools. Execution. Dominance.",
+        "brands_title": "Our Brands",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo for professionals — PRINCE2 certifications",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, Websites, Marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Construction, halls, industrial installations",
+        "brand_more": "More",
+        "philosophy_title": "Syndicate Philosophy",
+        "philosophy_text": "At the heart of Veles Syndicate lies the belief that true market dominance comes from a harmonious blend of knowledge, technology, and aesthetics.",
+        "synergy_title": "Brand Synergy",
+        "synergy_text": "Our business model is based on value exchange between brands.",
+        "academy_cta": "Join the Academy",
+        "digital_cta": "Start transformation",
+        "construction_cta": "Build the future",
+        "contact_title": "Contact",
+        "contact_name": "Full Name",
+        "contact_email": "E-mail",
+        "contact_msg": "Message",
+        "contact_send": "Send message",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. All rights reserved.",
+        "brand_mission": "Mission",
+        "brand_vision": "Vision",
+        "brand_why": "WHY?",
+        "brand_what": "WHAT?",
+        "brand_academy_mission_text": "Educating tomorrow's leaders by providing the highest quality certified project knowledge.",
+        "brand_academy_vision_text": "Becoming the global standard in business education and management.",
+        "brand_academy_why_text": "We believe that competence is the only currency of the future.",
+        "brand_academy_what_text": "Certified PRINCE2, Agile and strategic management courses.",
+        "brand_digital_mission_text": "Accelerating the digital evolution of enterprises through innovative technological solutions.",
+        "brand_digital_vision_text": "Being the architect of the most advanced digital ecosystems in the world.",
+        "brand_digital_why_text": "Technology should serve humans, not the other way around.",
+        "brand_digital_what_text": "SaaS, Custom Software, Marketing Automation, AI Integration.",
+        "brand_construction_mission_text": "Building lasting infrastructure for the industry of the future with attention to every detail.",
+        "brand_construction_vision_text": "Setting new standards in industrial construction and hall technology.",
+        "brand_construction_why_text": "Solid foundations are the basis of every empire.",
+        "brand_construction_what_text": "Steel structures, industrial installations, construction management.",
+        "cookie_text": "This website uses cookies to improve user experience. You can accept all or only essential ones.",
+        "cookie_accept": "Accept all",
+        "cookie_essential": "Essential only",
+        "cookie_privacy": "Privacy Policy",
+        "privacy_title": "Privacy Policy"
+    },
+    "de": {
+        "nav_home": "Startseite",
+        "nav_brands": "Marken",
+        "nav_philosophy": "Philosophie",
+        "nav_synergy": "Synergie",
+        "nav_contact": "Kontakt",
+        "hero_title": "Wir bauen Imperien.",
+        "hero_subtitle": "Wissen. Werkzeuge. Ausführung. Dominanz.",
+        "brands_title": "Unsere Marken",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo für Profis — PRINCE2-Zertifizierungen",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, Websites, Marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Bauwesen, Hallen, Industrieanlagen",
+        "brand_more": "Mehr",
+        "philosophy_title": "Syndicate-Philosophie",
+        "philosophy_text": "Veles Syndicate basiert auf der Überzeugung, dass wahre Marktdominanz aus einer harmonischen Mischung von Wissen, Technologie und Ästhetik resultiert.",
+        "synergy_title": "Markensynergie",
+        "synergy_text": "Unser Geschäftsmodell basiert auf dem Wertaustausch zwischen den Marken.",
+        "academy_cta": "Treten Sie der Academy bei",
+        "digital_cta": "Transformation starten",
+        "construction_cta": "Zukunft bauen",
+        "contact_title": "Kontakt",
+        "contact_name": "Name",
+        "contact_email": "E-Mail",
+        "contact_msg": "Nachricht",
+        "contact_send": "Nachricht senden",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. Alle Rechte vorbehalten.",
+        "brand_mission": "Mission",
+        "brand_vision": "Vision",
+        "brand_why": "WARUM?",
+        "brand_what": "WAS?",
+        "brand_academy_mission_text": "Ausbildung der Führungskräfte von morgen durch Bereitstellung von zertifiziertem Projektwissen höchster Qualität.",
+        "brand_academy_vision_text": "Der globale Standard in der Business-Ausbildung und im Management zu werden.",
+        "brand_academy_why_text": "Wir glauben, dass Kompetenz die einzige Währung der Zukunft ist.",
+        "brand_academy_what_text": "Zertifizierte Kurse in PRINCE2, Agile und strategischem Management.",
+        "brand_digital_mission_text": "Beschleunigung der digitalen Evolution von Unternehmen durch innovative Technologielösungen.",
+        "brand_digital_vision_text": "Architekt der fortschrittlichsten digitalen Ökosysteme der Welt zu sein.",
+        "brand_digital_why_text": "Technologie sollte dem Menschen dienen, nie umgekehrt.",
+        "brand_digital_what_text": "SaaS, Individualsoftware, Marketing-Automatisierung, KI-Integration.",
+        "brand_construction_mission_text": "Aufbau einer dauerhaften Infrastruktur für die Industrie der Zukunft mit Liebe zum Detail.",
+        "brand_construction_vision_text": "Setzen neuer Maßstäbe im Industriebau und in der Hallentechnik.",
+        "brand_construction_why_text": "Solide Fundamente sind die Basis jedes Imperiums.",
+        "brand_construction_what_text": "Stahlkonstruktionen, Industrieanlagen, Baumanagement.",
+        "cookie_text": "Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern. Sie können alle oder nur notwendige akzeptieren.",
+        "cookie_accept": "Akzeptieren",
+        "cookie_essential": "Nur notwendige",
+        "cookie_privacy": "Datenschutzerklärung",
+        "privacy_title": "Datenschutzerklärung"
+    },
+    "fr": {
+        "nav_home": "Accueil",
+        "nav_brands": "Marques",
+        "nav_philosophy": "Philosophie",
+        "nav_synergy": "Synergie",
+        "nav_contact": "Contact",
+        "hero_title": "Nous construisons des empires.",
+        "hero_subtitle": "Connaissance. Outils. Exécution. Dominance.",
+        "brands_title": "Nos Marques",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo pour les professionnels — certifications PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, sites web, marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Construction, halls, installations industrielles",
+        "brand_more": "Plus",
+        "philosophy_title": "Philosophie de Syndicate",
+        "philosophy_text": "Veles Syndicate repose sur la conviction que la véritable domination du marché provient d’un mélange harmonieux de connaissances, de technologie et d’esthétique.",
+        "synergy_title": "Synergie des marques",
+        "synergy_text": "Notre modèle d’affaires est basé sur l’échange de valeur entre les marques.",
+        "academy_cta": "Rejoindre l’Academy",
+        "digital_cta": "Démarrer la transformation",
+        "construction_cta": "Construire l'avenir",
+        "contact_title": "Contact",
+        "contact_name": "Nom",
+        "contact_email": "E-mail",
+        "contact_msg": "Message",
+        "contact_send": "Envoyer le message",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. Tous droits réservés.",
+        "brand_mission": "Mission",
+        "brand_vision": "Vision",
+        "brand_why": "POURQUOI?",
+        "brand_what": "QUOI?",
+        "brand_academy_mission_text": "Former les leaders de demain en fournissant des connaissances certifiées de la plus haute qualité en gestion de projet.",
+        "brand_academy_vision_text": "Devenir la norme mondiale en matière de formation commerciale et de gestion.",
+        "brand_academy_why_text": "Nous croyons que la compétence est la seule monnaie du futur.",
+        "brand_academy_what_text": "Cours certifiés PRINCE2, Agile et management stratégique.",
+        "brand_digital_mission_text": "Accélérer l'évolution numérique des entreprises grâce à des solutions technologiques innovantes.",
+        "brand_digital_vision_text": "Être l'architecte des écosystèmes numériques les plus avancés au monde.",
+        "brand_digital_why_text": "La technologie doit servir l'homme, et non l'inverse.",
+        "brand_digital_what_text": "SaaS, Logiciels sur mesure, automatisation du marketing, intégration de l'IA.",
+        "brand_construction_mission_text": "Construire une infrastructure durable pour l'industrie du futur avec une attention portée à chaque détail.",
+        "brand_construction_vision_text": "Établir de nouvelles normes dans la construction industrielle et la technologie des halls.",
+        "brand_construction_why_text": "Des fondations solides są podstawą każdego imperium.",
+        "brand_construction_what_text": "Structures métalliques, installations industrielles, gestion de construction.",
+        "cookie_text": "Ce site web utilise des cookies pour améliorer l'expérience utilisateur. Vous pouvez accepter tout ou seulement les essentiels.",
+        "cookie_accept": "Accepter",
+        "cookie_essential": "Essentiels seulement",
+        "cookie_privacy": "Politique de confidentialité",
+        "privacy_title": "Politique de confidentialité"
+    },
+    "es": {
+        "nav_home": "Inicio",
+        "nav_brands": "Marcas",
+        "nav_philosophy": "Filosofía",
+        "nav_synergy": "Sinergia",
+        "nav_contact": "Contacto",
+        "hero_title": "Construimos imperios.",
+        "hero_subtitle": "Conocimiento. Herramientas. Ejecución. Dominio.",
+        "brands_title": "Nuestras Marcas",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo para profesionales — certificaciones PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, sitios web, marketing",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Construcción, naves, instalaciones industriales",
+        "brand_more": "Más",
+        "philosophy_title": "Filosofía de Syndicate",
+        "philosophy_text": "Veles Syndicate se basa en la convicción de que el verdadero dominio del mercado proviene de una combinación armoniosa de conocimiento, tecnología y estética.",
+        "synergy_title": "Sinergia de marcas",
+        "synergy_text": "Nuestro modelo de negocio se basa en el intercambio de valor entre marcas para alcanzar el éxito.",
+        "academy_cta": "Únete a la Academy",
+        "digital_cta": "Iniciar transformación",
+        "construction_cta": "Construir el futuro",
+        "contact_title": "Contacto",
+        "contact_name": "Nombre",
+        "contact_email": "E-mail",
+        "contact_msg": "Mensaje",
+        "contact_send": "Enviar mensaje",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. Todos los derechos reservados.",
+        "brand_mission": "Misión",
+        "brand_vision": "Visión",
+        "brand_why": "¿POR QUÉ?",
+        "brand_what": "¿QUÉ?",
+        "brand_academy_mission_text": "Formar a los líderes del mañana proporcionando conocimientos de proyectos certificados de la más alta calidad.",
+        "brand_academy_vision_text": "Convertirse en el estándar global en educación y gestión empresarial.",
+        "brand_academy_why_text": "Creemos que la competencia es la única moneda del futuro.",
+        "brand_academy_what_text": "Cursos certificados de PRINCE2, Agile y gestión estratégica.",
+        "brand_digital_mission_text": "Acelerar la evolución digital de las empresas a través de soluciones tecnológicas innovadoras.",
+        "brand_digital_vision_text": "Ser el arquitecto de los ecosistemas digitales más avanzados del mundo.",
+        "brand_digital_why_text": "La tecnología debe servir al ser humano, no al revés.",
+        "brand_digital_what_text": "SaaS, software a medida, automatización de marketing, integración de IA.",
+        "brand_construction_mission_text": "Construir una infraestructura duradera para la industria del futuro con atención a cada detalle.",
+        "brand_construction_vision_text": "Establecer nuevos estándares en la construcción industrial y tecnología de naves.",
+        "brand_construction_why_text": "Unos cimientos sólidos są podstawą każdego imperium.",
+        "brand_construction_what_text": "Estructuras de acero, instalaciones industriales, gestión de obra.",
+        "cookie_text": "Este sitio web utiliza cookies para mejorar la experiencia del usuario. Puede aceptar todas o solo las esenciales.",
+        "cookie_accept": "Aceptar",
+        "cookie_essential": "Solo esenciales",
+        "cookie_privacy": "Política de privacidad",
+        "privacy_title": "Política de privacidad"
+    },
+    "ru": {
+        "nav_home": "Главная",
+        "nav_brands": "Бренды",
+        "nav_philosophy": "Философия",
+        "nav_synergy": "Синергия",
+        "nav_contact": "Контакт",
+        "hero_title": "Мы строим империи.",
+        "hero_subtitle": "Знания. Инструменты. Исполнение. Доминирование.",
+        "brands_title": "Наши бренды",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo для профессионалов — сертификация PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, веб-сайты, маркетинг",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Строительство, залы, промышленные установки",
+        "brand_more": "Подробнее",
+        "philosophy_title": "Философия Syndicate",
+        "philosophy_text": "В основе Veles Syndicate лежит убеждение, что истинное доминирование на рынке проистекает из гармоничного сочетания знаний, технологий и эстетики.",
+        "synergy_title": "Синергия брендов",
+        "synergy_text": "Наша бизнес-модель основана на обмене ценностями между брендами.",
+        "academy_cta": "Вступить в Academy",
+        "digital_cta": "Начать трансформацию",
+        "construction_cta": "Строить будущее",
+        "contact_title": "Контакт",
+        "contact_name": "Имя и фамилия",
+        "contact_email": "E-mail",
+        "contact_msg": "Сообщение",
+        "contact_send": "Отправить сообщение",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. Все права защищены.",
+        "brand_mission": "Миссия",
+        "brand_vision": "Видение",
+        "brand_why": "ПОЧЕМУ?",
+        "brand_what": "ЧТО?",
+        "brand_academy_mission_text": "Обучение лидеров завтрашнего дня путем предоставления высококачественных сертифицированных знаний по проектам.",
+        "brand_academy_vision_text": "Стать мировым стандартом в области бизнес-образования и управления.",
+        "brand_academy_why_text": "Мы верим, что компетентность — единственная валюта будущего.",
+        "brand_academy_what_text": "Сертифицированные курсы PRINCE2, Agile и стратегического менеджмента.",
+        "brand_digital_mission_text": "Ускорение цифровой эволюции предприятий с помощью инновационных технологических решений.",
+        "brand_digital_vision_text": "Быть архитектором самых передовых цифровых экосистем в мире.",
+        "brand_digital_why_text": "Технология должна служить человеку, а не наоборот.",
+        "brand_digital_what_text": "SaaS, заказное ПО, автоматизация маркетинга, интеграция ИИ.",
+        "brand_construction_mission_text": "Создание долговечной инфраструктуры для промышленности будущего с вниманием к каждой детали.",
+        "brand_construction_vision_text": "Установление новых стандартов в промышленном строительстве и технологиях залов.",
+        "brand_construction_why_text": "Прочный фундамент — основа каждой империи.",
+        "brand_construction_what_text": "Стальные конструкции, промышленные установки, управление строительством.",
+        "cookie_text": "Этот сайт использует файлы cookie для улучшения пользовательского опыта. Вы можете принять все или только необходимые.",
+        "cookie_accept": "Принять",
+        "cookie_essential": "Только необходимые",
+        "cookie_privacy": "Политика конфиденциальности",
+        "privacy_title": "Политика конфиденциальности"
+    },
+    "ua": {
+        "nav_home": "Головна",
+        "nav_brands": "Бренди",
+        "nav_philosophy": "Філософія",
+        "nav_synergy": "Синергія",
+        "nav_contact": "Контакт",
+        "hero_title": "Ми будуємо імперії.",
+        "hero_subtitle": "Знання. Інструменти. Виконання. Домінування.",
+        "brands_title": "Наші бренди",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "Duolingo для професіоналів — сертифікація PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, веб-сайти, маркетинг",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "Будівництво, зали, промислові установки",
+        "brand_more": "Детальніше",
+        "philosophy_title": "Філософія Syndicate",
+        "philosophy_text": "В основі Veles Syndicate лежить переконання, що справжнє домінування на ринку випливає з гармонійного поєднання знань, технологій та естетики.",
+        "synergy_title": "Синергія брендів",
+        "synergy_text": "Наша бізнес-модель заснована на обміні цінностями між брендами.",
+        "academy_cta": "Вступити до Academy",
+        "digital_cta": "Почати трансформацію",
+        "construction_cta": "Будувати майбутнє",
+        "contact_title": "Контакт",
+        "contact_name": "Ім’я та прізвище",
+        "contact_email": "E-mail",
+        "contact_msg": "Повідомлення",
+        "contact_send": "Надіслати повідомлення",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. Усі права захищені.",
+        "brand_mission": "Місія",
+        "brand_vision": "Бачення",
+        "brand_why": "ЧОМУ?",
+        "brand_what": "ЩО?",
+        "brand_academy_mission_text": "Навчання лідерів завтрашнього дня шляхом надання високоякісних сертифікованих знань з проектів.",
+        "brand_academy_vision_text": "Стати світовим стандартом у бізнес-освіті та управлінні.",
+        "brand_academy_why_text": "Ми віримо, що компетентність — єдина валюта майбутнього.",
+        "brand_academy_what_text": "Сертифіковані курси PRINCE2, Agile та стратегічного менеджменту.",
+        "brand_digital_mission_text": "Прискорення цифрової еволюції підприємств за допомогою інноваційних технологічних рішень.",
+        "brand_digital_vision_text": "Бути архітектором найпередовіших цифрових екосистем у світі.",
+        "brand_digital_why_text": "Технологія має служити людині, а не навпаки.",
+        "brand_digital_what_text": "SaaS, кастомне ПЗ, автоматизація маркетинга, інтеграція ШІ.",
+        "brand_construction_mission_text": "Створення довговічної інфраструктури для промисловості майбутнього з увагою до кожної деталі.",
+        "brand_construction_vision_text": "Встановлення нових стандартів у промисловому будівництві та технологіях залів.",
+        "brand_construction_why_text": "Міцний фундамент — основа кожної імперії.",
+        "brand_construction_what_text": "Сталеві конструкції, промислові установки, управління будівництвом.",
+        "cookie_text": "Цей сайт використовує файли cookie для покращення користувацького досвіду. Ви можете прийняти всі або лише необхідні.",
+        "cookie_accept": "Прийняти",
+        "cookie_essential": "Лише необхідні",
+        "cookie_privacy": "Політика конфіденційності",
+        "privacy_title": "Політика конфіденційності"
+    },
+    "zh": {
+        "nav_home": "首页",
+        "nav_brands": "品牌",
+        "nav_philosophy": "哲学",
+        "nav_synergy": "协同",
+        "nav_contact": "联系我们",
+        "hero_title": "我们建立帝国。",
+        "hero_subtitle": "知识。工具。执行。统治。",
+        "brands_title": "我们的品牌",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "职场版 Duolingo — PRINCE2 认证",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS、网站、营销",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "建筑、大厅、工业装置",
+        "brand_more": "更多",
+        "philosophy_title": "Syndicate 哲学",
+        "philosophy_text": "Veles Syndicate 的核心信念 is，真正的市场主导地位源于知识、技术和美学的和谐融合。",
+        "synergy_title": "品牌协同",
+        "synergy_text": "我们的商业模式基于品牌之间的价值交换。",
+        "academy_cta": "加入学院",
+        "digital_cta": "开始转型",
+        "construction_cta": "建设未来",
+        "contact_title": "联系我们",
+        "contact_name": "姓名",
+        "contact_email": "电子邮件",
+        "contact_msg": "留言",
+        "contact_send": "发送信息",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. 版权所有。",
+        "brand_mission": "使命",
+        "brand_vision": "愿景",
+        "brand_why": "为什么？",
+        "brand_what": "什么？",
+        "brand_academy_mission_text": "通过提供最高质量的认证项目知识，培养明天的领导者。",
+        "brand_academy_vision_text": "成为商业教育和管理领域的全球标准。",
+        "brand_academy_why_text": "我们相信能力是未来唯一的货币。",
+        "brand_academy_what_text": "经过认证的 PRINCE2、敏捷和战略 management 课程。",
+        "brand_digital_mission_text": "通过创新的技术解决方案加速企业的数字化演进。",
+        "brand_digital_vision_text": "成为世界上最先进的数字生态系统的建筑师。",
+        "brand_digital_why_text": "技术应该服务于人，而不是相反。",
+        "brand_digital_what_text": "SaaS、定制软件、营销自动化、AI 集成。",
+        "brand_construction_mission_text": "注重每一个细节，为未来的工业建设持久的基础设施。",
+        "brand_construction_vision_text": "在工业建设和大厅技术方面建立新标准。",
+        "brand_construction_why_text": "坚实的基础是每个帝国的基础。",
+        "brand_construction_what_text": "钢结构、工业装置、施工管理。",
+        "cookie_text": "本网站使用 cookie 来改善用户体验。您可以接受全部或仅接受必需的 cookie。",
+        "cookie_accept": "接受",
+        "cookie_essential": "仅限必需",
+        "cookie_privacy": "隐私政策",
+        "privacy_title": "隐私政策"
+    },
+    "ja": {
+        "nav_home": "ホーム",
+        "nav_brands": "ブランド",
+        "nav_philosophy": "哲学",
+        "nav_synergy": "シナジー",
+        "nav_contact": "お問い合わせ",
+        "hero_title": "帝国を築く。",
+        "hero_subtitle": "知識。道具。実行。支配。",
+        "brands_title": "私たちのブランド",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "プロフェッショナルのための Duolingo — PRINCE2 認定",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS、ウェブサイト、マーケティング",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "建設、ホール、産業設備",
+        "brand_more": "もっと見る",
+        "philosophy_title": "Syndicate の哲学",
+        "philosophy_text": "Veles Syndicateの核心には、真の市場支配は知識、技術、そして美学の調和のとれた融合から生まれるという信念があります。",
+        "synergy_title": "ブランドシナジー",
+        "synergy_text": "私たちのビジネスモデルは、ブランド間の価値交換に基づいています。",
+        "academy_cta": "アカデミーに入会する",
+        "digital_cta": "変革を開始する",
+        "construction_cta": "未来を築く",
+        "contact_title": "お問い合わせ",
+        "contact_name": "氏名",
+        "contact_email": "メールアドレス",
+        "contact_msg": "メッセージ",
+        "contact_send": "メッセージを送信",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. 全著作権所有。",
+        "brand_mission": "使命",
+        "brand_vision": "ビジョン",
+        "brand_why": "なぜ？",
+        "brand_what": "何？",
+        "brand_academy_mission_text": "最高品質の認定プロジェクト知識を提供することにより、明日のリーダーを育成します。",
+        "brand_academy_vision_text": "ビジネス教育と管理のグローバルスタンダードになる。",
+        "brand_academy_why_text": "私たちは、能力が未来の唯一の通貨であると信じています。",
+        "brand_academy_what_text": "認定PRINCE2、アジャイル、戦略管理コース。",
+        "brand_digital_mission_text": "革新的な技術ソリューションを通じて、企業のデジタル進化を加速します。",
+        "brand_digital_vision_text": "世界で最も先進的なデジタルエコシステムの設計者になる。",
+        "brand_digital_why_text": "技術は人に仕えるべきであり、その逆ではありません。",
+        "brand_digital_what_text": "SaaS、カスタムソフトウェア、マーケティングオートメーション、AI統合。",
+        "brand_construction_mission_text": "細部にまで細心の注意を払い、未来の産業に向けた永続的なインフラを構築します。",
+        "brand_construction_vision_text": "産業建設とホール技術における新しい基準を設定する。",
+        "brand_construction_why_text": "強固な基盤はすべての帝国の基礎です。",
+        "brand_construction_what_text": "鉄骨構造、産業設備、施工管理。",
+        "cookie_text": "このウェブサイトでは、ユーザー体験を向上させるためにクッキーを使用しています。すべてを受け入れるか、必要なものだけを受け入れることができます。",
+        "cookie_accept": "同意する",
+        "cookie_essential": "必須のみ",
+        "cookie_privacy": "プライバシーポリシー",
+        "privacy_title": "プライバシーポリシー"
+    },
+    "ko": {
+        "nav_home": "홈",
+        "nav_brands": "브랜드",
+        "nav_philosophy": "철학",
+        "nav_synergy": "시너지",
+        "nav_contact": "연락처",
+        "hero_title": "우리는 제국을 건설합니다.",
+        "hero_subtitle": "지식. 도구. 실행. 지배.",
+        "brands_title": "우리의 브랜드",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "전문가를 위한 듀오링고 — PRINCE2 인증",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, 웹사이트, 마케팅",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "건설, 홀, 산업 시설",
+        "brand_more": "더 보기",
+        "philosophy_title": "Syndicate 철학",
+        "philosophy_text": "Veles Syndicate의 핵심에는 진정한 시장 지배력이 지식, 기술 및 미학의 조화로운 결합에서 나온다는 믿음이 있습니다.",
+        "synergy_title": "브랜드 시너지",
+        "synergy_text": "우리의 비즈니스 모델은 브랜드 간의 가치 교환을 기반으로 합니다.",
+        "academy_cta": "아카데미 가입",
+        "digital_cta": "변혁 시작",
+        "construction_cta": "미래를 건설하다",
+        "contact_title": "연락처",
+        "contact_name": "성함",
+        "contact_email": "이메일",
+        "contact_msg": "메시지",
+        "contact_send": "메시지 보내기",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. 모든 권리 보유。",
+        "brand_mission": "미션",
+        "brand_vision": "비전",
+        "brand_why": "왜?",
+        "brand_what": "무엇?",
+        "brand_academy_mission_text": "최고 품질의 공인 프로젝트 지식을 제공하여 미래의 리더를 교육합니다.",
+        "brand_academy_vision_text": "비즈니스 교육 및 관리의 글로벌 표준이 됩니다.",
+        "brand_academy_why_text": "우리는 역량이 미래의 유일한 화폐라고 믿습니다.",
+        "brand_academy_what_text": "공인 PRINCE2, Agile 및 전략 관리 과정.",
+        "brand_digital_mission_text": "혁신적인 기술 솔루션을 통해 기업의 디지털 진화를 가속화합니다.",
+        "brand_digital_vision_text": "세계에서 가장 진보된 디지털 생태계의 설계자가 됩니다.",
+        "brand_digital_why_text": "기술은 사람을 위해 봉사해야 하며 그 반대가 되어서는 안 됩니다.",
+        "brand_digital_what_text": "SaaS, 맞춤형 소프트웨어, 마케팅 자동화, AI 통합.",
+        "brand_construction_mission_text": "모든 세부 사항에 주의를 기울여 미래의 산업을 위한 지속 가능한 인프라를 구축합니다.",
+        "brand_construction_vision_text": "산업 건설 및 홀 기술의 새로운 표준을 제시합니다.",
+        "brand_construction_why_text": "탄탄한 기초는 모든 제국의 기반입니다.",
+        "brand_construction_what_text": "철골 구조, 산업 시설, 건설 관리.",
+        "cookie_text": "이 웹사이트는 사용자 경험을 개선하기 위해 쿠키를 사용합니다. 모두 수락하거나 필수 항목만 수락할 수 있습니다.",
+        "cookie_accept": "수락",
+        "cookie_essential": "필수만",
+        "cookie_privacy": "개인정보 처리방침",
+        "privacy_title": "개인정보 처리방침"
+    },
+    "hi": {
+        "nav_home": "होम",
+        "nav_brands": "ब्रांड्स",
+        "nav_philosophy": "दर्शन",
+        "nav_synergy": "तालमेल",
+        "nav_contact": "संपर्क",
+        "hero_title": "हम साम्राज्य बनाते हैं।",
+        "hero_subtitle": "ज्ञान। उपकरण। निष्पादन। प्रभुत्व।",
+        "brands_title": "हमारे ब्रांड्स",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "पेशेवरों के लिए डुओलिंगो — PRINCE2 प्रमाणपत्र",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS, वेबसाइटें, मार्केटिंग",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "निर्माण, हॉल, औद्योगिक प्रतिष्ठान",
+        "brand_more": "अधिक",
+        "philosophy_title": "Syndicate दर्शन",
+        "philosophy_text": "Veles Syndicate के मूल में यह विश्वास is कि सच्चा बाजार प्रभुत्व ज्ञान, प्रौद्योगिकी और सौंदर्यशास्त्र के सामंजस्यपूर्ण मिश्रण से आता है।",
+        "synergy_title": "ब्रांड तालमेल",
+        "synergy_text": "हमारा बिजनेस मॉडल ब्रांडों के बीच मूल्य विनिमय पर आधारित है।",
+        "academy_cta": "अकादमी में शामिल हों",
+        "digital_cta": "परिवर्तन शुरू करें",
+        "construction_cta": "भविष्य का निर्माण करें",
+        "contact_title": "संपर्क",
+        "contact_name": "नाम",
+        "contact_email": "ई-मेल",
+        "contact_msg": "संदेश",
+        "contact_send": "संदेश भेजें",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. सर्वाधिकार सुरक्षित।",
+        "brand_mission": "मिशन",
+        "brand_vision": "दृष्टिकोण",
+        "brand_why": "क्यों?",
+        "brand_what": "क्या?",
+        "brand_academy_mission_text": "उच्चतम गुणवत्ता वाले प्रमाणित परियोजना ज्ञान प्रदान करके भविष्य के नेताओं को शिक्षित करना।",
+        "brand_academy_vision_text": "व्यापार शिक्षा और प्रबंधन में वैश्विक मानक बनना।",
+        "brand_academy_why_text": "हमारा मानना है कि योग्यता भविष्य की एकमात्र मुद्रा है।",
+        "brand_academy_what_text": "प्रमाणित PRINCE2, Agile and रणनीतिक प्रबंधन पाठ्यक्रम।",
+        "brand_digital_mission_text": "अभिनव तकनीकी समाधानों के माध्यम से उद्यमों के डिजिटल विकास को गति देना।",
+        "brand_digital_vision_text": "दुनिया में सबसे उन्नत डिजिटल पारिस्थितिकी तंत्र का वास्तुकार बनना।",
+        "brand_digital_why_text": "तकनीक को इंसान की सेवा करनी चाहिए, न कि इसके विपरीत।",
+        "brand_digital_what_text": "SaaS, कस्टम सॉफ्टवेयर, मार्केटिंग ऑटोमेशन, AI इंटीग्रेशन।",
+        "brand_construction_mission_text": "हर विवरण पर ध्यान देते हुए भविष्य के उद्योग के लिए स्थायी बुनियादी ढांचे का निर्माण करना।",
+        "brand_construction_vision_text": "औद्योगिक निर्माण और हॉल प्रौद्योगिकी में नए मानक स्थापित करना।",
+        "brand_construction_why_text": "ठोस नींव हर साम्राज्य का आधार होती है।",
+        "brand_construction_what_text": "स्टील संरचनाएं, औद्योगिक प्रतिष्ठان, निर्माण प्रबंधन।",
+        "cookie_text": "यह वेबसाइट उपयोगकर्ता अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग करती है। आप सभी या केवल आवश्यक को स्वीकार कर सकते हैं।",
+        "cookie_accept": "स्वीकार करें",
+        "cookie_essential": "केवल आवश्यक",
+        "cookie_privacy": "गोपनीयता नीति",
+        "privacy_title": "गोपनीयता नीति"
+    },
+    "ar": {
+        "nav_home": "الرئيسية",
+        "nav_brands": "العلامات التجارية",
+        "nav_philosophy": "الفلسفة",
+        "nav_synergy": "التآزر",
+        "nav_contact": "اتصل بنا",
+        "hero_title": "نحن نبني الإمبراطوريات.",
+        "hero_subtitle": "المعرفة. الأدوات. التنفيذ. الهيمنة.",
+        "brands_title": "علاماتنا التجارية",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "دولينجو للمحترفين — شهادات PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS، المواقع الإلكترونية، التسويق",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "البناء والقاعات والمنشآت الصناعية",
+        "brand_more": "المزيد",
+        "philosophy_title": "فلسفة Syndicate",
+        "philosophy_text": "تقوم Veles Syndicate على الاعتقاد بأن الهيمنة الحقيقية على السوق تأتي من مزيج متناغم من المعرفة والتكنولوجيا والجماليات.",
+        "synergy_title": "تآزر العلامات التجارية",
+        "synergy_text": "يعتمد نموذج عملنا على تبادل القيمة بين العلامات التجارية.",
+        "academy_cta": "انضم إلى الأكاديمية",
+        "digital_cta": "ابدأ التحول",
+        "construction_cta": "ابنِ المستقبل",
+        "contact_title": "اتصل بنا",
+        "contact_name": "الاسم الكامل",
+        "contact_email": "البريد الإلكتروني",
+        "contact_msg": "الرسالة",
+        "contact_send": "إرسال الرسالة",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. جميع الحقوق محفوظة.",
+        "brand_mission": "المهمة",
+        "brand_vision": "الرؤية",
+        "brand_why": "لماذا؟",
+        "brand_what": "ماذا؟",
+        "brand_academy_mission_text": "تعليم قادة الغد من خلال توفير أعلى جودة من المعرفة المعتمدة بالمشاريع.",
+        "brand_academy_vision_text": "أن نصبح المعيار العالمي in تعليم وإدارة الأعمال.",
+        "brand_academy_why_text": "نحن نؤمن بأن الكفاءة هي العملة الوحيدة للمستقبل.",
+        "brand_academy_what_text": "دورات معتمدة in PRINCE2 وAgile والإدارة الاستراتيجية.",
+        "brand_digital_mission_text": "تسريع التطور الرقمي للمؤسسات من خلال حلول تكنولوجية مبتكرة.",
+        "brand_digital_vision_text": "أن نكون مهندس النظم البيئية الرقمية الأكثر تقدماً in العالم.",
+        "brand_digital_why_text": "يجب أن تخدم التكنولوجيا الإنسان، وليس العكس.",
+        "brand_digital_what_text": "SaaS، البرمجيات المخصصة، أتمتة التسويق، تكامل الذكاء الاصطناعي.",
+        "brand_construction_mission_text": "بناء بنية تحتية دائمة لصناعة المستقبل مع الاهتمام بكل التفاصيل.",
+        "brand_construction_vision_text": "وضع معايير جديدة in البناء الصناعي وتكنولوجيا القاعات.",
+        "brand_construction_why_text": "الأساسات القوية هي أساس كل إمبراطورية.",
+        "brand_construction_what_text": "الهياكل الفولاذية، التركيبات الصناعية، إدارة البناء.",
+        "cookie_text": "يستخدم هذا الموقع ملفات تعريف الارتباط لتحسين تجربة المستخدم. يمكنك قبول الكل أو الضروري فقط.",
+        "cookie_accept": "قبول",
+        "cookie_essential": "الضروري فقط",
+        "cookie_privacy": "سياسة الخصوصية",
+        "privacy_title": "سياسة الخصوصية"
+    },
+    "fa": {
+        "nav_home": "خانه",
+        "nav_brands": "برندها",
+        "nav_philosophy": "فلسفه",
+        "nav_synergy": "هم‌افزایی",
+        "nav_contact": "تماس",
+        "hero_title": "ما امپراتوری‌ها را می‌سازيم.",
+        "hero_subtitle": "دانش. ابزارها. اجرا. تسلط.",
+        "brands_title": "برندهای ما",
+        "brand_academy_title": "VELES ACADEMY",
+        "brand_academy_desc": "دولینگو برای حرفه‌ای‌ها — گواهینامه‌های PRINCE2",
+        "brand_digital_title": "VELES DIGITAL",
+        "brand_digital_desc": "SaaS، وب‌سایت‌ها، بازاریابی",
+        "brand_construction_title": "VELES CONSTRUCTION",
+        "brand_construction_desc": "ساخت‌وساز، سالن‌ها، تأسیسات صنعتی",
+        "brand_more": "بیشتر",
+        "philosophy_title": "فلسفه Syndicate",
+        "philosophy_text": "در قلب Veles Syndicate این باور نهفته است که تسلط واقعی بر بازار از ترکیب هماهنگ دانش، فناوری и زیبایی‌شناسی حاصل می‌شود.",
+        "synergy_title": "هم‌افزایی برندها",
+        "synergy_text": "مدل کسب‌وکار ما بر پایه تبادل ارزش بین برندها استوار است.",
+        "academy_cta": "به آکادمی بپیوندید",
+        "digital_cta": "تحول را شروع کنید",
+        "construction_cta": "آینده را بسازید",
+        "contact_title": "تماس با ما",
+        "contact_name": "نام کامل",
+        "contact_email": "ایمیل",
+        "contact_msg": "پیام",
+        "contact_send": "ارسال پیام",
+        "footer_rights": "© 2024 Veles Syndicate Sp. z o.o. تمامی حقوق محفوظ است.",
+        "brand_mission": "ماموریت",
+        "brand_vision": "چشم‌انداز",
+        "brand_why": "چرا؟",
+        "brand_what": "چه چیزی؟",
+        "brand_academy_mission_text": "آموزش رهبران فردا با ارائه با کیفیت‌ترین دانش گواهی شده پروژه.",
+        "brand_academy_vision_text": "تبدیل شدن به استاندارد جهانی در آموزش و مدیریت کسب و کار.",
+        "brand_academy_why_text": "ما بر این باوریم که شایستگی تنها ارز آینده است.",
+        "brand_academy_what_text": "دوره های آموزشی معتبر PRINCE2، Agile and مدیریت استراتژیک.",
+        "brand_digital_mission_text": "شتاب بخشیدن به تکامل دیجیتال شرکت ها از طریق راه حل های فناورانه نوآورانه.",
+        "brand_digital_vision_text": "بودن معمار پیشرفته ترین اکوسیستم های دیجیتال در جهان.",
+        "brand_digital_why_text": "فناوری باید in خدمت انسان باشد، نه برعکس.",
+        "brand_digital_what_text": "SaaS، نرم افزار سفارشی، اتوماسیون بازاریابی، یکپارچه سازی هوش مصنوعی.",
+        "brand_construction_mission_text": "ایجاد زیرساخت های پایدار برای صنعت آینده با توجه به تمام جزئیات.",
+        "brand_construction_vision_text": "تعیین استانداردهای جدید in ساخت و ساز صنعتی and فناوری سالن ها.",
+        "brand_construction_why_text": "پایه های محکم اساس هر امپراتوری است.",
+        "brand_construction_what_text": "سازه های فولادی، تاسیسات صنعتی، مدیریت ساخت و ساز.",
+        "cookie_text": "این وب‌سایت برای بهبود تجربه کاربری از کوکی‌ها استفاده می‌کند. می‌توانید همه یا فقط موارد ضروری را بپذیرید.",
+        "cookie_accept": "پذیرفتن",
+        "cookie_essential": "فقط ضروری",
+        "cookie_privacy": "سیاست حفظ حریم خصوصی",
+        "privacy_title": "سیاست حفظ حریم خصوصی"
+    }
+};
+
+
+        let currentLang = 'pl';
+
+        /**
+         * Funkcja zmiany języka i aktualizacji tekstów na stronie.
+         */
+        function setLanguage(lang) {
+            if (!translations[lang]) return;
+            currentLang = lang;
+            localStorage.setItem('veles_lang', lang);
+            document.documentElement.lang = lang;
+
+            if (lang === 'ar' || lang === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.classList.add('rtl');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.classList.remove('rtl');
+            }
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.textContent = translations[lang][key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+
+            const currentHash = window.location.hash.split('?')[0] || '#/hero';
+            window.history.replaceState(null, '', `${currentHash}?lang=${lang}`);
+            document.querySelector('.lang-select').value = lang;
+        }
+
+        /**
+         * Główny router SPA obsługujący nawigację przez hash.
+         */
+        function navigateTo(sectionId) {
+            document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+                window.location.hash = `#/${sectionId}?lang=${currentLang}`;
+            }
+            window.scrollTo(0,0);
+        }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.split('?')[0].replace('#/', '') || 'hero';
+            navigateTo(hash);
+        });
+
+        window.addEventListener('load', () => {
+            const storedLang = localStorage.getItem('veles_lang') || 'pl';
+            setLanguage(storedLang);
+            const initialHash = window.location.hash.split('?')[0].replace('#/', '') || 'hero';
+            navigateTo(initialHash);
+            
+            if (!localStorage.getItem('cookies_accepted')) {
+                document.getElementById('cookie-banner').classList.add('visible');
+            }
+            
+            initHeroCanvas();
+            init3DTilt();
+        });
+
+        function acceptCookies() {
+            localStorage.setItem('cookies_accepted', 'true');
+            document.getElementById('cookie-banner').classList.remove('visible');
+        }
+
+        /**
+         * Inicjalizacja efektu 3D Tilt dla kart marek.
+         */
+        function init3DTilt() {
+            const cards = document.querySelectorAll('.card-3d-wrap');
+            cards.forEach(wrap => {
+                const card = wrap.querySelector('.card-3d');
+                wrap.addEventListener('mousemove', e => {
+                    const rect = wrap.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rotateX = (y - rect.height / 2) / 10;
+                    const rotateY = (rect.width / 2 - x) / 10;
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                });
+                wrap.addEventListener('mouseleave', () => {
+                    card.style.transform = `rotateX(0) rotateY(0)`;
+                });
+            });
+        }
+
+        /**
+         * Hero Canvas - Golden Particles
+         */
+        function initHeroCanvas() {
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+            class Particle {
+                constructor() { this.init(); }
+                init() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = Math.random() * 0.5 - 0.25;
+                    this.speedY = Math.random() * 0.5 - 0.25;
+                    this.alpha = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.x += this.speedX; this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(212, 175, 55, ${this.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
