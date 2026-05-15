@@ -140,11 +140,16 @@
             border: 1px solid var(--border-color);
             border-radius: 30px;
             transform-style: preserve-3d;
-            transition: transform 0.1s ease;
+            transition: var(--transition-smooth);
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-3d-wrap:hover .card-3d {
+            border-color: var(--brand-color);
+            box-shadow: 0 0 30px var(--brand-color);
         }
 
         .card-shine {
@@ -300,7 +305,7 @@
         <section id="brands">
             <h2 data-i18n="brands_title">Nasze Marki</h2>
             <div class="brands-grid">
-                <div class="card-3d-wrap" data-color="var(--green)" onclick="navigateTo('brand-academy')">
+                <div class="card-3d-wrap" style="--brand-color: var(--green);" data-color="var(--green)" onclick="navigateTo('brand-academy')">
                     <div class="card-3d">
                         <div class="card-shine"></div>
                         <div class="card-content">
@@ -310,7 +315,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-3d-wrap" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
+                <div class="card-3d-wrap" style="--brand-color: var(--blue);" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
                     <div class="card-3d">
                         <div class="card-shine"></div>
                         <div class="card-content">
@@ -320,7 +325,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-3d-wrap" data-color="var(--red)" onclick="navigateTo('brand-construction')">
+                <div class="card-3d-wrap" style="--brand-color: var(--red);" data-color="var(--red)" onclick="navigateTo('brand-construction')">
                     <div class="card-3d">
                         <div class="card-shine"></div>
                         <div class="card-content">
