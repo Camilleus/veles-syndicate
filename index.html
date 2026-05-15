@@ -9,6 +9,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        syndicate: '#D4AF37',
+                        copper: '#b17a50',
+                        academy: '#44C060',
+                        digital: '#0170F5',
+                        construction: '#FF3131',
+                        'dark-bg': '#0A0A0A',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
         /* Zmienne CSS definiujące paletę barw i parametry wizualne */
         :root {
@@ -18,6 +39,8 @@
             --green: #44C060;
             --blue: #0170F5;
             --red: #FF3131;
+            --copper: #b17a50;
+            --copper-glow: rgba(177, 122, 80, 0.3);
             
             /* Domyślny Dark Mode */
             --bg-main: #0A0A0A;
@@ -331,50 +354,69 @@
     </header>
 
     <main id="spa-root">
-        <section id="hero" class="active">
+        <section id="hero" class="active relative overflow-hidden flex items-center justify-center min-h-screen">
             <canvas id="hero-canvas"></canvas>
-            <div class="hero-content">
-                <div style="margin-bottom: 40px; display: flex; justify-content: center;">
-                    <img src="veles-syndicate-logo-alone-bgless-golden.png" class="hero-logo-img" alt="Veles Syndicate">
+            <div class="hero-content relative z-10 text-center px-4">
+                <div class="mb-12 flex justify-center">
+                    <img src="veles-syndicate-logo-alone-bgless-golden.png" class="hero-logo-img w-48 md:w-64" alt="Veles Syndicate">
                 </div>
-                <h1 data-i18n="hero_title">Budujemy imperia.</h1>
-                <p data-i18n="hero_subtitle" class="hero-subtitle">Wiedza. Narzędzia. Wykonanie. Dominacja.</p>
-                <div class="hero-cta">
-                    <button onclick="navigateTo('brands')" class="btn-3d" data-i18n="nav_brands">Marki</button>
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-tight mb-8 bg-gradient-to-b from-white via-white to-syndicate bg-clip-text text-transparent uppercase font-heading" data-i18n="hero_title">
+                    Budujemy imperia.
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-400 font-light tracking-wide mb-12 max-w-3xl mx-auto" data-i18n="hero_subtitle">
+                    Wiedza. Narzędzia. Wykonanie. Dominacja.
+                </p>
+                <div class="hero-cta flex flex-wrap justify-center gap-6">
+                    <button onclick="navigateTo('brands')" class="btn-3d px-10 py-5 text-lg" data-i18n="nav_brands">Odkryj Marki</button>
+                    <button onclick="navigateTo('contact')" class="btn-3d px-10 py-5 text-lg border-white/20 text-white hover:bg-white hover:text-black" data-i18n="nav_contact">Kontakt</button>
                 </div>
             </div>
         </section>
 
-        <section id="brands">
-            <h2 data-i18n="brands_title">Nasze Marki</h2>
-            <div class="brands-grid">
-                <div class="card-3d-wrap" style="--brand-color: var(--green);" data-color="var(--green)" onclick="navigateTo('brand-academy')">
-                    <div class="card-3d">
+        <section id="brands" class="py-24">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 font-heading" data-i18n="brands_title">Nasze Marki</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto px-4">
+                <!-- Academy -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--green);" data-color="var(--green)" onclick="navigateTo('brand-academy')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
                         <div class="card-shine"></div>
-                        <div class="card-content">
-                            <img src="veles-academy-logo-alone-bgless.png" class="brand-logo-img" alt="Academy">
-                            <h3 class="card-title">VELES ACADEMY</h3>
-                            <p class="card-desc" data-i18n="brand_academy_desc">Edukacja elit finansowych.</p>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-academy-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Academy">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES ACADEMY</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_academy_desc">Edukacja elit finansowych.</p>
                         </div>
                     </div>
                 </div>
-                <div class="card-3d-wrap" style="--brand-color: var(--blue);" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
-                    <div class="card-3d">
+                <!-- Strategy -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--copper);" data-color="var(--copper)" onclick="navigateTo('brand-strategy')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
                         <div class="card-shine"></div>
-                        <div class="card-content">
-                            <img src="veles-digital-logo-alone-bgless.png" class="brand-logo-img" alt="Digital">
-                            <h3 class="card-title">VELES DIGITAL</h3>
-                            <p class="card-desc" data-i18n="brand_digital_desc">Technologia i SaaS.</p>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-strategy-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Strategy">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES STRATEGY</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_strategy_desc">Strategia i Turnaround.</p>
                         </div>
                     </div>
                 </div>
-                <div class="card-3d-wrap" style="--brand-color: var(--red);" data-color="var(--red)" onclick="navigateTo('brand-construction')">
-                    <div class="card-3d">
+                <!-- Digital -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--blue);" data-color="var(--blue)" onclick="navigateTo('brand-digital')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
                         <div class="card-shine"></div>
-                        <div class="card-content">
-                            <img src="veles-construction-logo-alone-bgless.png" class="brand-logo-img" alt="Construction">
-                            <h3 class="card-title">VELES CONSTRUCTION</h3>
-                            <p class="card-desc" data-i18n="brand_construction_desc">Budownictwo przemysłowe.</p>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-digital-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Digital">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES DIGITAL</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_digital_desc">Technologia i SaaS.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Construction -->
+                <div class="card-3d-wrap h-[500px]" style="--brand-color: var(--red);" data-color="var(--red)" onclick="navigateTo('brand-construction')">
+                    <div class="card-3d bg-[#111] border border-white/10 rounded-[30px] relative overflow-hidden flex items-center justify-center transition-all duration-500">
+                        <div class="card-shine"></div>
+                        <div class="card-content p-12 text-center transform translate-z-[80px]">
+                            <img src="veles-construction-logo-alone-bgless.png" class="brand-logo-img w-32 mx-auto mb-8 filter drop-shadow-2xl" alt="Construction">
+                            <h3 class="text-2xl font-bold mb-4 font-heading">VELES CONSTRUCTION</h3>
+                            <p class="text-gray-400 text-lg" data-i18n="brand_construction_desc">Budownictwo przemysłowe.</p>
                         </div>
                     </div>
                 </div>
@@ -423,6 +465,27 @@
             </div>
         </section>
 
+        <section id="brand-strategy">
+            <div class="brand-detail">
+                <h2 data-i18n="brand_strategy_title">VELES STRATEGY</h2>
+                <div class="asymmetric-layout">
+                    <div>
+                        <h3 data-i18n="brand_mission" style="color: var(--copper); margin-bottom: 10px;">Misja</h3>
+                        <p class="content-text" data-i18n="brand_strategy_mission_text">Optymalizacja procesów biznesowych i przywracanie rentowności przedsiębiorstwom w kryzysie.</p>
+                        <h3 data-i18n="brand_vision" style="color: var(--copper); margin: 20px 0 10px;">Wizja</h3>
+                        <p class="content-text" data-i18n="brand_strategy_vision_text">Wyznaczanie standardów doskonałości operacyjnej i strategicznej na rynku europejskim.</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border-left: 3px solid var(--copper);">
+                        <h4 data-i18n="brand_why" style="color: var(--gold); margin-bottom: 10px;">WHY?</h4>
+                        <p data-i18n="brand_strategy_why_text">Wierzymy, że każda firma zasługuje na drugą szansę i precyzyjne plan działania.</p>
+                        <h4 data-i18n="brand_what" style="color: var(--gold); margin-top: 20px; margin-bottom: 10px;">WHAT?</h4>
+                        <p data-i18n="brand_strategy_what_text">Audyt operacyjny, restrukturyzacja finansowa, strategie wzrostu.</p>
+                    </div>
+                </div>
+                <button onclick="navigateTo('contact')" class="btn-3d" style="margin-top: 50px;" data-i18n="strategy_cta">Napraw swój biznes</button>
+            </div>
+        </section>
+
         <section id="brand-construction">
             <div class="brand-detail">
                 <h2 data-i18n="brand_construction_title">VELES CONSTRUCTION</h2>
@@ -449,9 +512,31 @@
             <p class="content-text" data-i18n="philosophy_text" style="text-align: center;">U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.</p>
         </section>
 
-        <section id="synergy">
-            <h2 data-i18n="synergy_title">Synergia marek</h2>
-            <p class="content-text" data-i18n="synergy_text" style="text-align: center;">Nasz model biznesowy opiera się na wymianie wartości między markami.</p>
+        <section id="synergy" class="py-24">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 font-heading" data-i18n="synergy_title">Synergia marek</h2>
+            <div class="asymmetric-layout max-w-6xl mx-auto px-4">
+                <div class="space-y-8">
+                    <p class="content-text text-xl" data-i18n="synergy_text">Nasz model biznesowy opiera się na wymianie wartości między markami.</p>
+                    <div class="p-8 bg-white/5 rounded-2xl border border-white/10">
+                        <h3 class="text-copper font-bold mb-4 font-heading" data-i18n="synergy_strategy_title">VELES STRATEGY: MÓZG EKOSYSTEMU</h3>
+                        <p class="text-gray-400" data-i18n="synergy_strategy_desc">Veles Strategy stanowi rdzeń analityczny i strategiczny całego Syndicate. To tutaj powstają plany ekspansji, optymalizacji i ratowania przedsiębiorstw, które są następnie realizowane przez pozostałe marki.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-6 bg-academy/10 rounded-xl border border-academy/20 text-center">
+                        <span class="text-academy font-bold" data-i18n="synergy_box_knowledge">Wiedza</span>
+                    </div>
+                    <div class="p-6 bg-digital/10 rounded-xl border border-digital/20 text-center">
+                        <span class="text-digital font-bold" data-i18n="synergy_box_tech">Technologia</span>
+                    </div>
+                    <div class="p-6 bg-construction/10 rounded-xl border border-construction/20 text-center">
+                        <span class="text-construction font-bold" data-i18n="synergy_box_execution">Realizacja</span>
+                    </div>
+                    <div class="p-6 bg-copper/10 rounded-xl border border-copper/20 text-center">
+                        <span class="text-copper font-bold" data-i18n="synergy_box_strategy">Strategia</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="privacy">
@@ -473,10 +558,31 @@
         </section>
     </main>
 
-    <footer>
-        <div style="text-align: center; padding: 40px;">
-            <p data-i18n="footer_rights">© 2026 Veles Syndicate Sp. z o.o.</p>
-            <a href="#/privacy" style="color: var(--text-dim); font-size: 0.8rem; text-decoration: underline;" data-i18n="cookie_privacy">Polityka prywatności</a>
+    <footer class="bg-[#050505] border-t border-white/5 py-12 px-5">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-1">
+                <img src="veles-syndicate-logo-alone-bgless-golden.png" class="w-12 mb-6" alt="Veles Syndicate">
+                <p class="text-sm text-gray-500" data-i18n="footer_rights">© 2026 Veles Syndicate Sp. z o.o.</p>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-syndicate font-bold text-xs uppercase tracking-widest">Ecosystem</h4>
+                <ul class="text-sm text-gray-400 space-y-2">
+                    <li><a href="https://velesacademy.app" class="hover:text-academy transition-colors">Veles Academy</a></li>
+                    <li><a href="https://velesdigital.pl" class="hover:text-digital transition-colors">Veles Digital</a></li>
+                    <li><a href="https://velesconstruction.pl" class="hover:text-construction transition-colors">Veles Construction</a></li>
+                    <li><a href="#/brand-strategy" class="hover:text-copper transition-colors">Veles Strategy</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-syndicate font-bold text-xs uppercase tracking-widest">Legal</h4>
+                <ul class="text-sm text-gray-400 space-y-2">
+                    <li><a onclick="navigateTo('privacy')" class="hover:text-white cursor-pointer" data-i18n="cookie_privacy">Polityka prywatności</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-syndicate font-bold text-xs uppercase tracking-widest">Contact</h4>
+                <p class="text-sm text-gray-400">kontakt@velesdigital.pl</p>
+            </div>
         </div>
     </footer>
 
@@ -505,6 +611,8 @@
         "brand_digital_desc": "SaaS, Websites, Marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Budownictwo, hale, instalacje przemysłowe",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Strategia wzrostu, turnaround i egzekucja. Naprawiamy firmy, które tracą pieniądze.",
         "brand_more": "Więcej",
         "philosophy_title": "Filozofia Syndicate",
         "philosophy_text": "U podstaw Veles Syndicate leży przekonanie, że prawdziwa dominacja rynkowa wynika z harmonijnego połączenia wiedzy, technologii i estetyki.",
@@ -513,6 +621,7 @@
         "academy_cta": "Wstąp do Academy",
         "digital_cta": "Rozpocznij transformację",
         "construction_cta": "Zbuduj przyszłość",
+        "strategy_cta": "Napraw swój biznes",
         "contact_title": "Kontakt",
         "contact_name": "Imię i nazwisko",
         "contact_email": "E-mail",
@@ -535,6 +644,16 @@
         "brand_construction_vision_text": "Wyznaczanie nowych standardów w budownictwie przemysłowym i technologii hal.",
         "brand_construction_why_text": "Solidne fundamenty są podstawą każdego imperium.",
         "brand_construction_what_text": "Konstrukcje stalowe, instalacje przemysłowe, zarządzanie budową.",
+        "brand_strategy_mission_text": "Optymalizacja procesów biznesowych i przywracanie rentowności przedsiębiorstwom w kryzysie.",
+        "brand_strategy_vision_text": "Wyznaczanie standardów doskonałości operacyjnej i strategicznej na rynku europejskim.",
+        "brand_strategy_why_text": "Wierzymy, że każda firma zasługuje na drugą szansę i precyzyjny plan działania.",
+        "brand_strategy_what_text": "Audyt operacyjny, restrukturyzacja finansowa, strategie wzrostu.",
+        "synergy_strategy_title": "VELES STRATEGY: MÓZG EKOSYSTEMU",
+        "synergy_strategy_desc": "Veles Strategy stanowi rdzeń analityczny i strategiczny całego Syndicate. To tutaj powstają plany ekspansji, optymalizacji i ratowania przedsiębiorstw, które są następnie realizowane przez pozostałe marki.",
+        "synergy_box_knowledge": "Wiedza",
+        "synergy_box_tech": "Technologia",
+        "synergy_box_execution": "Realizacja",
+        "synergy_box_strategy": "Strategia",
         "cookie_text": "Ta strona używa plików cookies w celu poprawy doświadczenia użytkownika. Możesz zaakceptować wszystkie lub tylko niezbędne.",
         "cookie_accept": "Akceptuję",
         "cookie_essential": "Tylko niezbędne",
@@ -556,6 +675,8 @@
         "brand_digital_desc": "SaaS, Websites, Marketing",
         "brand_construction_title": "VELES CONSTRUCTION",
         "brand_construction_desc": "Construction, halls, industrial installations",
+        "brand_strategy_title": "VELES STRATEGY",
+        "brand_strategy_desc": "Growth strategy, turnaround, and execution. We fix companies that lose money.",
         "brand_more": "More",
         "philosophy_title": "Syndicate Philosophy",
         "philosophy_text": "At the heart of Veles Syndicate lies the belief that true market dominance comes from a harmonious blend of knowledge, technology, and aesthetics.",
@@ -564,6 +685,7 @@
         "academy_cta": "Join the Academy",
         "digital_cta": "Start transformation",
         "construction_cta": "Build the future",
+        "strategy_cta": "Fix your business",
         "contact_title": "Contact",
         "contact_name": "Full Name",
         "contact_email": "E-mail",
@@ -586,6 +708,16 @@
         "brand_construction_vision_text": "Setting new standards in industrial construction and hall technology.",
         "brand_construction_why_text": "Solid foundations are the basis of every empire.",
         "brand_construction_what_text": "Steel structures, industrial installations, construction management.",
+        "brand_strategy_mission_text": "Optimizing business processes and restoring profitability to companies in crisis.",
+        "brand_strategy_vision_text": "Setting standards for operational and strategic excellence in the European market.",
+        "brand_strategy_why_text": "We believe that every company deserves a second chance and a precise action plan.",
+        "brand_strategy_what_text": "Operational audit, financial restructuring, growth strategies.",
+        "synergy_strategy_title": "VELES STRATEGY: THE ECOSYSTEM BRAIN",
+        "synergy_strategy_desc": "Veles Strategy is the analytical and strategic core of the entire Syndicate. This is where expansion, optimization, and turnaround plans are born, which are then executed by the other brands.",
+        "synergy_box_knowledge": "Knowledge",
+        "synergy_box_tech": "Technology",
+        "synergy_box_execution": "Execution",
+        "synergy_box_strategy": "Strategy",
         "cookie_text": "This website uses cookies to improve user experience. You can accept all or only essential ones.",
         "cookie_accept": "Accept all",
         "cookie_essential": "Essential only",
@@ -1220,11 +1352,37 @@
             
             initHeroCanvas();
             init3DTilt();
+            initScrollAnimations();
         });
 
         function acceptCookies() {
             localStorage.setItem('cookies_accepted', 'true');
             document.getElementById('cookie-banner').classList.remove('visible');
+        }
+
+        /**
+         * Scroll Animations using Intersection Observer
+         */
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Targets
+            document.querySelectorAll('section h2, .card-3d-wrap, .asymmetric-layout > div').forEach(el => {
+                el.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-1000', 'ease-out');
+                observer.observe(el);
+            });
         }
 
         /**
